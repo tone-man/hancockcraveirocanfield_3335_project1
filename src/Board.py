@@ -4,6 +4,11 @@ class Board:
         self.freeCells = [0 for x in range(numFreeCells)]
         self.tableaus = [[]] * 8
         self.foundations = [] * 4
+
+        #insert Deck Here
+
+        #Do Dealing here
+        
     
     def reset(self):
         self.freeCells = []
