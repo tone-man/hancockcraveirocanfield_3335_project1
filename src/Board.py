@@ -3,7 +3,7 @@ from Card import Card
 class Board:
     def __init__(self, numFreeCells):
         self.freeCells = [Card(None,None) for x in range(numFreeCells)]
-        self.tableaus = [[Card(None,None)]] * 8
+        self.tableaus = [[Card(None,None) for x in range(8)] for x in range(7)]
         self.foundations = [Card(None,None)] * 4
 
         #insert Deck Here

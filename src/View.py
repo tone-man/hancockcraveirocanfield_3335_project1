@@ -1,17 +1,21 @@
 #Take gameboard and print it to the screen
 from Board import Board
 from Card import Card
-import pandas as pd
 b = Board(4)
+
+
 cells = b.getFreeCells()
 cells[0] = Card("♥", '2')
 cells[1] = Card("♥", '6')
 cells[2] = Card("♥", '3')
 cells[3] = Card("♥", '4')
 found = b.getFoundations()
-
+tabs = b.getTableaus()
+tabs[0][0] = Card("♥", '2')
+tabs[0][1] = Card("♥", '6')
+tabs[0][2] = Card("♥", '3')
+tabs[6][3] = Card("♥", '4')
 def updateView(board):
-
 
     BoardStrs = []
     for card in cells:
@@ -19,8 +23,13 @@ def updateView(board):
     for card in found:
         BoardStrs.append(card.toString())
     fcellprint(BoardStrs)
-
-
+    print("\n---------------------------------------\n")
+    BoardStrs.clear()
+    for i in range(7):
+        tabstrs = []
+        for j in range(8):
+            tabstrs.append(tabs[i][j].toString())
+        fcellprint(tabstrs)
 
     #Print the board
     #print(b.freeCells[0].toString(), b.freeCells[1].toString(), b.freeCells[2].toString(), b.freeCells[3].toString())

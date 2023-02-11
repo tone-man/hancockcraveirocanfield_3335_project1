@@ -14,7 +14,7 @@ class Card:
         num = self.getNumber()
         suit = self.getSuit()
         if num == None and suit == None:
-            return "---- \n" + "|   | \n" + "---- "
+            return "---- \n" + "|  | \n" + "---- "
         if num == '10':
             return self.number + "-- \n" + self.suit + "  | \n" + "---- "
         return self.number + "--- \n" + self.suit + "  | \n" + "---- "
