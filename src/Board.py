@@ -8,20 +8,19 @@ class Board:
         Keyword Arguments:
         numFreeCells -- number of Free Cells available to the player
         """
-        self.numFreeCells = numFreeCells
-        self.freeCells = [] * numFreeCells
-        self.tableaus = [[]] * 8
-        self.foundations = [] * 4
+        self.freeCells = [Card(None,None) for x in range(numFreeCells)]
+        self.tableaus = [[Card(None,None) for x in range(8)] for x in range(7)]
+        self.foundations = [Card(None,None)] * 4
 
         #insert Deck Here
 
         #Do Dealing here
         
     
-    def reset(self):
-        self.freeCells = [] * self.numFreeCells
-        self.tableaus = []
-        self.foundations = []
+    def reset(self, numFreeCells):
+        self.freeCells = [0 for x in range(numFreeCells)]
+        self.tableaus = [[0]] * 8
+        self.foundations = [0] * 4
 
         #insert Deck Here
 
@@ -42,7 +41,8 @@ class Board:
     def addToTableau(self, c, tidx):
         pass
 
-    def popTableau(self,  )
+    def popTableau(self, ridx):
+        pass
 
     def setTableaus(self, tableaus):
         self.tableaus = tableaus
