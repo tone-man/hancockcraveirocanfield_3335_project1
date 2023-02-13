@@ -1,7 +1,15 @@
 #Object that represents the board for a FreeCell game
+from Card import Card
+
 class Board:
     def __init__(self, numFreeCells):
-        self.freeCells = [0 for x in range(numFreeCells)]
+        """Constructs a new FreeCell Board
+        
+        Keyword Arguments:
+        numFreeCells -- number of Free Cells available to the player
+        """
+        self.numFreeCells = numFreeCells
+        self.freeCells = [] * numFreeCells
         self.tableaus = [[]] * 8
         self.foundations = [] * 4
 
@@ -11,9 +19,13 @@ class Board:
         
     
     def reset(self):
-        self.freeCells = []
+        self.freeCells = [] * self.numFreeCells
         self.tableaus = []
         self.foundations = []
+
+        #insert Deck Here
+
+        #Do Dealing here
 
     def getFreeCells(self):
         return self.freeCells
@@ -24,8 +36,13 @@ class Board:
     def getFoundations(self):
         return self.foundations
     
-    def setFreeCells(self, freeCells):
-        self.freeCells = freeCells
+    def setCell(self, c, fcidx):
+        self.freeCells[fcidx] = c
+    
+    def addToTableau(self, c, tidx):
+        pass
+
+    def popTableau(self,  )
 
     def setTableaus(self, tableaus):
         self.tableaus = tableaus
