@@ -16,9 +16,17 @@ class GameController:
 
         Keyword arguments:
         st -- source tableau
-        dt -- destination tebleau
+        dt -- destination 
         """
-        pass
+        t = m.getTableaus()
+        c = t[st].peek()
+
+        if(self.isValidMove(c, t[dt])):
+            c = st.pop
+            t[dt].push(c)
+            self.updateView()
+
+
 
     def moveCard(self, st, dfc) -> None:
         """Moves a card from the tableau to a freecell.
@@ -27,7 +35,12 @@ class GameController:
         st -- source tableau
         dfc -- destination freecell
         """
-        pass
+        c = st.peek()
+
+        if(self.isValidMove(c, dfc)):
+            c = st.pop()
+            m.getfreeCells = c
+            self.updateView()
 
     def moveCard(self, sfc, dt) -> None:
         """Moves a card from a freecell to a tableau
@@ -36,7 +49,10 @@ class GameController:
         sfc -- source free cell
         dt -- destination tableau
         """
-        pass
+        c = sfc.peek
+
+        if(self.isValidMove(c, dt)):
+            sfc.pop()
 
     def moveFoundation(self, t) -> None:
         """Moves a card from a tableau to a foundation pile

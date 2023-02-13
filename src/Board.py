@@ -32,17 +32,14 @@ class Board:
     def getTableaus(self):
         return self.tableaus
 
+    def getTableau(idx):
+        return self.tableaus[idx]
+
     def getFoundations(self):
         return self.foundations
     
     def setCell(self, c, fcidx):
         self.freeCells[fcidx] = c
-    
-    def addToTableau(self, c, tidx):
-        pass
-
-    def popTableau(self, ridx):
-        pass
 
     def setTableaus(self, tableaus):
         self.tableaus = tableaus
