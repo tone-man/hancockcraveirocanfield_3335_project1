@@ -34,7 +34,7 @@ class GameController:
         st -- source tableau
         dfcIdx -- destination freecell index
         """
-        fc = m.getFreeCells()
+        fc = self.m.getFreeCells()
         c = st.peek()
 
         if(self.isValidMove(c, dfcIdx)):
@@ -49,7 +49,7 @@ class GameController:
         sfc -- source free cell index
         dt -- destination tableau
         """
-        fc = m.getFreeCells()
+        fc = self.m.getFreeCells()
         c = fc[sfcIdx]
 
         if(self.isValidMove(c, dt)):
@@ -63,7 +63,7 @@ class GameController:
         Keyword arguments:
         t -- source tableau
         """
-        f = m.getFoundations()
+        f = self.m.getFoundations()
         c = t.peek()
         s = c.getSuit()
 
@@ -78,8 +78,8 @@ class GameController:
         Keyword arguments:
         fc -- source free cell index
         """
-        fc = m.getFreeCells()
-        f = m.getFoundations()
+        fc = self.m.getFreeCells()
+        f = self.m.getFoundations()
 
         c = fc[fcIdx]
         s = c.getSuit()
@@ -105,7 +105,7 @@ class GameController:
         c -- card in question
         fc -- destination freecell index
         """
-        f = m.getFreeCells()
+        f = self.m.getFreeCells()
 
         if(f[fcIdx] == None):
             return True
@@ -113,12 +113,12 @@ class GameController:
         return False
 
     
-    def isValidMove(self, c, dfp) -> bool:
+    def isValidMove(self, c) -> bool:
         """Checks that card placement is valid
 
         Keyword arguments:
         c -- card in question
-        dfp -- destination foundation pile
+        
         """
         if(f[fcIdx] == None):
             return True
@@ -129,4 +129,4 @@ class GameController:
         """Updates the view the controller is connected to.
         In this case, it is the gameView.
         """
-        v.updateView(m)
+        self.v.updateView(m)
