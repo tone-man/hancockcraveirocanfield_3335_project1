@@ -15,10 +15,18 @@ class View:
         self.fcellprint(BoardStrs)
         print("\n---------------------------------------\n")
         BoardStrs.clear()
-        for i in range(7):
+        longest = self.find_max_list(tabs)
+        tablen = len(tabs)
+        for j in range(longest):
             tabstrs = []
-            for j in range(8):
-                tabstrs.append(tabs[i][j].toString())
+            for i in range(tablen):
+                try:
+                    if tabs[i][j] == None:
+                        tabstrs.append("     \n" + "     \n" + "     ")
+                except IndexError:
+                    tabstrs.append("     \n" + "     \n" + "     ")
+                else:
+                    tabstrs.append(tabs[i][j].toString())
             self.fcellprint(tabstrs)
 
     #https://stackoverflow.com/questions/43372078/how-to-print-multiline-strings-on-the-same-line-in-python
@@ -44,3 +52,9 @@ class View:
                 for i in range(len(parts))
             ]
             print(''.join(padded_strings))
+
+    def find_max_list(self, list):
+        list_len = []
+        for i in list:
+            list_len.append(len(i))
+        return(max(list_len))

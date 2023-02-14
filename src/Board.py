@@ -10,7 +10,7 @@ class Board:
         numFreeCells -- number of Free Cells available to the player
         """
         self.freeCells = [Card(None,None) for x in range(numFreeCells)]
-        self.tableaus = [[Card(None,None) for x in range(8)] for x in range(7)]
+        self.tableaus = [[Card(None,None) for x in range(7)] for x in range(8)]
         self.foundations = [Card(None,None)] * 4
 
         # Creating a new deck
