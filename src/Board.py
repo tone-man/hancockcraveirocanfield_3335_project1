@@ -1,5 +1,6 @@
 #Object that represents the board for a FreeCell game
 from Card import Card
+from Deck import Deck 
 
 class Board:
     def __init__(self, numFreeCells):
@@ -12,9 +13,16 @@ class Board:
         self.tableaus = [[Card(None,None) for x in range(8)] for x in range(7)]
         self.foundations = [Card(None,None)] * 4
 
-        #insert Deck Here
+        # Creating a new deck
+        newDeck = Deck()
+        # Shuffling the deck
+        newDeck.shuffle()
 
-        #Do Dealing here
+        # Do Dealing here
+        for i in range(0, 7):
+            for j in range(0, 6):
+                self.tableaus[i].push(newDeck.getTopC)
+
         
     
     def reset(self, numFreeCells):
@@ -32,7 +40,7 @@ class Board:
     def getTableaus(self):
         return self.tableaus
 
-    def getTableau(idx):
+    def getTableau(self, idx):
         return self.tableaus[idx]
 
     def getFoundations(self):

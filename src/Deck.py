@@ -6,10 +6,10 @@ class Deck:
 
     def __init__(self):
         """ Initalize the deck by making an empty array and filling it with cards.
-        S = Spades
-        C = Clubs
-        H = Hearts
-        D = Diamonds
+        0 = Spades
+        1 = Clubs
+        2 = Hearts
+        3 = Diamonds
 
         Keyword arguments:
         i -- 4 times 
