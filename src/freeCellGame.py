@@ -1,6 +1,7 @@
 from Board import Board
-from View import updateView
+from View import View
 print("Hello")
 
 b = Board(4)
-updateView(b)
+v = View()
+v.updateView(b)
