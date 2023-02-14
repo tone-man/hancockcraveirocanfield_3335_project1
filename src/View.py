@@ -5,18 +5,15 @@ b = Board(4)
 
 
 cells = b.getFreeCells()
-cells[0] = Card("♥", '2')
-cells[1] = Card("♥", '6')
-cells[2] = Card("♥", '3')
-cells[3] = Card("♥", '4')
+cells[0] = Card(0, 11)
+cells[1] = Card(0, 6)
+cells[2] = Card(0, 3)
+cells[3] = Card(0, 4)
 found = b.getFoundations()
 tabs = b.getTableaus()
-tabs[0][0] = Card("♥", '2')
-tabs[0][1] = Card("♥", '6')
-tabs[0][2] = Card("♥", '3')
-tabs[6][3] = Card("♥", '4')
 def updateView(board):
 
+    print("Free Cells------------------Foundations\n")
     BoardStrs = []
     for card in cells:
         BoardStrs.append(card.toString())
