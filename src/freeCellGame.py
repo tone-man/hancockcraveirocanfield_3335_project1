@@ -5,3 +5,4 @@ print("Hello")
 b = Board(4)
 v = View()
 v.updateView(b)
+

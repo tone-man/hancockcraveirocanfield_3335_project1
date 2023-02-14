@@ -19,10 +19,16 @@ class Board:
         newDeck.shuffle()
 
         # Do Dealing here
-        for i in range(0, 7):
+        for i in range(0, 8):
             for j in range(0, 6):
-                self.tableaus[i].insert(0,newDeck.getTopC())
+                    self.tableaus[j].insert(0, newDeck.getTopC())  
 
+        for i in range(0,4):
+            c = newDeck.getTopC()
+            self.tableaus[i].insert(0, c)
+            print(c)  
+        
+        
         
     
     def reset(self, numFreeCells):
