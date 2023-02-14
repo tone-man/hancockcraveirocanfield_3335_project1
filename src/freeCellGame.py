@@ -3,4 +3,5 @@ from View import View
 print("Hello")
 
 b = Board(4)
-View.updateView(b)
+v = View()
+v.updateView(b)
