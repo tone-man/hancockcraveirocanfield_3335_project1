@@ -22,7 +22,7 @@ class View:
             self.fcellprint(tabstrs)
 
     #https://stackoverflow.com/questions/43372078/how-to-print-multiline-strings-on-the-same-line-in-python
-    def fcellprint(strings):
+    def fcellprint(self, strings):
         strings_by_column = [s.split('\n') for s in strings]
 
         # Group the split strings by line
