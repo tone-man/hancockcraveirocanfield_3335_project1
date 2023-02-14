@@ -21,7 +21,7 @@ class Board:
         # Do Dealing here
         for i in range(0, 7):
             for j in range(0, 6):
-                self.tableaus[i].push(newDeck.getTopC)
+                self.tableaus[i].insert(0,newDeck.getTopC())
 
         
     
