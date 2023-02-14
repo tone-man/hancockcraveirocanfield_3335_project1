@@ -1,18 +1,11 @@
 #Take gameboard and print it to the screen
 from Board import Board
 from Card import Card
-b = Board(4)
 
-
-cells = b.getFreeCells()
-cells[0] = Card(0, 11)
-cells[1] = Card(0, 6)
-cells[2] = Card(0, 3)
-cells[3] = Card(0, 4)
-found = b.getFoundations()
-tabs = b.getTableaus()
 def updateView(board):
-
+    cells = board.getFreeCells()
+    found = board.getFoundations()
+    tabs = board.getTableaus()
     print("Free Cells------------------Foundations\n")
     BoardStrs = []
     for card in cells:
@@ -27,12 +20,6 @@ def updateView(board):
         for j in range(8):
             tabstrs.append(tabs[i][j].toString())
         fcellprint(tabstrs)
-
-    #Print the board
-    #print(b.freeCells[0].toString(), b.freeCells[1].toString(), b.freeCells[2].toString(), b.freeCells[3].toString())
-    
-    #for i in range(len(b.freeCells)):
-        #print (fcellprint(b.freeCells[i]))
 
 #https://stackoverflow.com/questions/43372078/how-to-print-multiline-strings-on-the-same-line-in-python
 def fcellprint(strings):
@@ -57,5 +44,4 @@ def fcellprint(strings):
             for i in range(len(parts))
         ]
         print(''.join(padded_strings))
-#https://stackoverflow.com/questions/39230209/how-to-print-2-lists-vertically-next-to-each-other
 updateView(b)
