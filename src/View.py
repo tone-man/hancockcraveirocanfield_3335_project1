@@ -29,13 +29,13 @@ class View:
         for j in range(longest):
             tabstrs = []
             for i in range(tablen):
-                try:
-                    if tabs[i][j] == None:
-                        tabstrs.append(nullcard.toString())
-                except IndexError:
+
+                if (len(tabs[i]) > j):
+                    if tabs[i][j] != None:
+                        tabstrs.append(tabs[i][j].toString())
+                else:        
                     tabstrs.append(nullcard.toString())
-                else:
-                    tabstrs.append(tabs[i][j].toString())
+
             self.fcellprint(tabstrs)
 
     #https://stackoverflow.com/questions/43372078/how-to-print-multiline-strings-on-the-same-line-in-python
