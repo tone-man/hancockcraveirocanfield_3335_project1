@@ -27,7 +27,7 @@ class GameController:
 
 
 
-    def moveCard(self, st, fcIdx) -> None:
+    def moveCard(self, st, dfcIdx) -> None:
         """Moves a card from the tableau to a freecell.
 
         Keyword arguments:
@@ -63,28 +63,23 @@ class GameController:
         Keyword arguments:
         t -- source tableau
         """
-        f = self.m.getFoundations()
         c = t.peek()
-        s = c.getSuit()
 
-        if(self.isValidMove(c, f[s])):
+        if(self.isValidMove(c)):
             c = t.pop()
             f[s] = c
             self.updateView()
 
-    def moveFoundation(fcIdx) -> None:
+    def moveFoundation(self, fcIdx) -> None:
         """Moves a card from a freecell to a foundation
 
         Keyword arguments:
         fc -- source free cell index
         """
         fc = self.m.getFreeCells()
-        f = self.m.getFoundations()
-
         c = fc[fcIdx]
-        s = c.getSuit()
 
-        if(self.isValidMove(c, f[s])):
+        if(self.isValidMove(c)):
             fc[idx] =  None
             f = c
             self.updateView()
@@ -96,10 +91,23 @@ class GameController:
         c -- card in question
         dt -- destination tableau
         """
+
+        topC = dt.peek() #Top Card of Destination Tableau
+        s = c.getSuit()
+
+        if((s == 0 or s == 1) and (topC.getSuit() == 2 or topC.getSuit() == 3)):
+            if(topC.getValue() - c.getValue <= 1):
+                return True
+
+        elif((s == 2 or s == 3) and (topC.getSuit() == 0 or topC.getSuit() == 1)):
+            if(topC.getValue() - c.getValue <= 1):
+                return True
+
+
         return False
     
     def isValidMove(self, c, fcIdx) -> bool:
-        """Checks that card placement is valid.
+        """Checks that card placement is valid into freecell.
 
         Keyword arguments:
         c -- card in question
@@ -114,15 +122,21 @@ class GameController:
 
     
     def isValidMove(self, c) -> bool:
-        """Checks that card placement is valid
+        """Checks that card placement is valid into foundation pile.
 
         Keyword arguments:
         c -- card in question
         
         """
-        if(f[fcIdx] == None):
-            return True
+        f = self.m.getFoundations()
+        s = c.getSuit()
+        v = c.getValue()
 
+        if(f[s] == None and v == 1):
+            return True
+        elif(f[s] != None and v - f[s].getValue <= 1):
+            return True
+            
         return False
 
     def updateView(self) -> None:
