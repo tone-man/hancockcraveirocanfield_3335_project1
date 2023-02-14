@@ -1,4 +1,8 @@
+from Board import Board
+from View import View
 print("Hello")
 
-for x in range(1, 14):
-    print(x)
+b = Board(4)
+v = View()
+v.updateView(b)
+
