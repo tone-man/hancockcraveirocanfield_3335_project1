@@ -2,7 +2,7 @@
 from Board import Board
 from Card import Card
 class View:
-    def updateView(board):
+    def updateView(self, board):
         cells = board.getFreeCells()
         found = board.getFoundations()
         tabs = board.getTableaus()
@@ -12,14 +12,14 @@ class View:
             BoardStrs.append(card.toString())
         for card in found:
             BoardStrs.append(card.toString())
-        fcellprint(BoardStrs)
+        self.fcellprint(BoardStrs)
         print("\n---------------------------------------\n")
         BoardStrs.clear()
         for i in range(7):
             tabstrs = []
             for j in range(8):
                 tabstrs.append(tabs[i][j].toString())
-            fcellprint(tabstrs)
+            self.fcellprint(tabstrs)
 
     #https://stackoverflow.com/questions/43372078/how-to-print-multiline-strings-on-the-same-line-in-python
     def fcellprint(strings):
