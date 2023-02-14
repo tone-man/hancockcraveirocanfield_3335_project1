@@ -44,4 +44,3 @@ def fcellprint(strings):
             for i in range(len(parts))
         ]
         print(''.join(padded_strings))
-updateView(b)
