@@ -6,12 +6,21 @@ class View:
         cells = board.getFreeCells()
         found = board.getFoundations()
         tabs = board.getTableaus()
+        nullcard = Card(None, None)
+
         print("Free Cells------------------Foundations\n")
         BoardStrs = []
         for card in cells:
-            BoardStrs.append(card.toString())
+            if(card):
+                BoardStrs.append(nullcard.toString())
+            else:
+                BoardStrs.append(nullcard.toString())
         for card in found:
-            BoardStrs.append(card.toString())
+            if(card):
+                BoardStrs.append(card.toString())
+            else:
+                BoardStrs.append(nullcard.toString())
+
         self.fcellprint(BoardStrs)
         print("\n---------------------------------------\n")
         BoardStrs.clear()
@@ -22,9 +31,9 @@ class View:
             for i in range(tablen):
                 try:
                     if tabs[i][j] == None:
-                        tabstrs.append("     \n" + "     \n" + "     ")
+                        tabstrs.append(nullcard.toString())
                 except IndexError:
-                    tabstrs.append("     \n" + "     \n" + "     ")
+                    tabstrs.append(nullcard.toString())
                 else:
                     tabstrs.append(tabs[i][j].toString())
             self.fcellprint(tabstrs)
