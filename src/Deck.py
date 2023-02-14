@@ -18,7 +18,7 @@ class Deck:
         """
         self.fullDeck = []
 
-        for i in ["S", "C", "H", "D"]:
+        for i in range(0, 4):
             for j in range (1, 14):
                 self.fullDeck.append(Card(i, j))
     
