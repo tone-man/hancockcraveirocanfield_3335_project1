@@ -26,7 +26,7 @@ class View:
         BoardStrs.clear()
         longest = self.find_max_list(tabs)
         tablen = len(tabs)
-        for j in range(longest):
+        for j in range(longest - 1, -1, -1):
             tabstrs = []
             for i in range(tablen):
 
