@@ -37,7 +37,7 @@ class GameController:
         fc = self.m.getFreeCells()
         c = st[0]
 
-        if(self.isValidMove(c, dfcIdx)):
+        if(self.isValidMoveForFreeCell(c, dfcIdx)):
             c = st.pop(0)
             fc[dfcIdx] = c
             self.updateView()
@@ -52,7 +52,7 @@ class GameController:
         fc = self.m.getFreeCells()
         c = fc[sfcIdx]
 
-        if(self.isValidMove(c, dt)):
+        if(self.isValidMoveForTab(c, dt)):
             fc[sfcIdx] = None
             dt.insert(0, c)
             self.updateView()
@@ -63,9 +63,11 @@ class GameController:
         Keyword arguments:
         t -- source tableau
         """
+        f = self.m.getFoundations()
         c = t[0]
+        s = c.getSuit()
 
-        if(self.isValidMove(c)):
+        if(self.isValidMoveForFoundation(c)):
             c = t.pop(0)
             f[s] = c
             self.updateView()
@@ -77,11 +79,13 @@ class GameController:
         fc -- source free cell index
         """
         fc = self.m.getFreeCells()
+        f = self.m.getFoundations()
         c = fc[fcIdx]
+        s = c.getSuit()
 
-        if(self.isValidMove(c)):
-            fc[idx] =  None
-            f = c
+        if(self.isValidMoveForFoundation(c)):
+            fc[idx] = None
+            f[s] = c
             self.updateView()
 
     def isValidMoveForTab(self, c, dt) -> bool:
@@ -91,6 +95,8 @@ class GameController:
         c -- card in question
         dt -- destination tableau
         """
+        if c == None:
+            return False
 
         topC = dt[0] #Top Card of Destination Tableau
         s = c.getSuit()
@@ -113,6 +119,9 @@ class GameController:
         c -- card in question
         fc -- destination freecell index
         """
+
+        if c == None:
+            return False
         f = self.m.getFreeCells()
 
         if(f[fcIdx] == None):
@@ -128,13 +137,16 @@ class GameController:
         c -- card in question
         
         """
+        if c == None:
+            return False
+
         f = self.m.getFoundations()
         s = c.getSuit()
         v = c.getNumber()
 
         if(f[s] == None and v == 1):
             return True
-        elif(f[s] != None and v - f[s].getNumber <= 1):
+        elif(f[s] != None and v - f[s].getNumber() == 1):
             return True
             
         return False

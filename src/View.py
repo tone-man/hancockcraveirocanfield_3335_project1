@@ -14,7 +14,7 @@ class View:
         BoardStrs = []
         for card in cells:
             if(card):
-                BoardStrs.append(nullcard.toString())
+                BoardStrs.append(card.toString())
             else:
                 BoardStrs.append(nullcard.toString())
         for card in found:
