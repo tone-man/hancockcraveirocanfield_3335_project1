@@ -34,7 +34,7 @@ class View:
             for i in range(len(tabs)):
                 
                 idx = len(tabs[i]) - count
-                if (idx > 0):
+                if (idx >= 0):
                     if tabs[i][idx] != None:
                         tabstrs.append(tabs[i][idx].toString())
                 else:
