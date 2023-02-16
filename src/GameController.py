@@ -11,23 +11,23 @@ class GameController:
         self.m = m
         self.v = v
 
-    def moveCard(self, st, dt) -> None:
+    def moveCardBetweenTabs(self, st, dt) -> None:
         """Moves a card from the tableau to another tableau
 
         Keyword arguments:
         st -- source tableau
         dt -- destination 
         """
-        c = st.index(0)
+        c = st[0]
 
-        if(self.isValidMove(c, dt)):
+        if(self.isValidMoveForTab(c, dt)):
             c = st.pop(0)
-            dt.append(0, c)
+            dt.insert(0, c)
             self.updateView()
 
 
 
-    def moveCard(self, st, dfcIdx) -> None:
+    def moveCardToFreeCell(self, st, dfcIdx) -> None:
         """Moves a card from the tableau to a freecell.
 
         Keyword arguments:
@@ -35,14 +35,14 @@ class GameController:
         dfcIdx -- destination freecell index
         """
         fc = self.m.getFreeCells()
-        c = st.index(0)
+        c = st[0]
 
         if(self.isValidMove(c, dfcIdx)):
             c = st.pop(0)
             fc[dfcIdx] = c
             self.updateView()
 
-    def moveCard(self, sfcIdx, dt) -> None:
+    def moveCardFromFreeCell(self, sfcIdx, dt) -> None:
         """Moves a card from a freecell to a tableau
 
         Keyword arguments:
@@ -54,23 +54,23 @@ class GameController:
 
         if(self.isValidMove(c, dt)):
             fc[sfcIdx] = None
-            dt.append(0, c)
+            dt.insert(0, c)
             self.updateView()
 
-    def moveFoundation(self, t) -> None:
+    def moveTabtoFoundation(self, t) -> None:
         """Moves a card from a tableau to a foundation pile
 
         Keyword arguments:
         t -- source tableau
         """
-        c = t.index(0)
+        c = t[0]
 
         if(self.isValidMove(c)):
             c = t.pop(0)
             f[s] = c
             self.updateView()
 
-    def moveFoundation(self, fcIdx) -> None:
+    def moveFreeCelltoFoundation(self, fcIdx) -> None:
         """Moves a card from a freecell to a foundation
 
         Keyword arguments:
@@ -84,7 +84,7 @@ class GameController:
             f = c
             self.updateView()
 
-    def isValidMove(self, c, dt) -> bool:
+    def isValidMoveForTab(self, c, dt) -> bool:
         """Checks that card placement is valid.
 
         Keyword arguments:
@@ -92,21 +92,21 @@ class GameController:
         dt -- destination tableau
         """
 
-        topC = dt.index(0) #Top Card of Destination Tableau
+        topC = dt[0] #Top Card of Destination Tableau
         s = c.getSuit()
 
         if((s == 0 or s == 1) and (topC.getSuit() == 2 or topC.getSuit() == 3)):
-            if(topC.getValue() - c.getValue <= 1):
+            if(topC.getNumber() - c.getNumber() == 1):
                 return True
 
         elif((s == 2 or s == 3) and (topC.getSuit() == 0 or topC.getSuit() == 1)):
-            if(topC.getValue() - c.getValue <= 1):
+            if(topC.getNumber() - c.getNumber() == 1):
                 return True
 
 
         return False
     
-    def isValidMove(self, c, fcIdx) -> bool:
+    def isValidMoveForFreeCell(self, c, fcIdx) -> bool:
         """Checks that card placement is valid into freecell.
 
         Keyword arguments:
@@ -121,7 +121,7 @@ class GameController:
         return False
 
     
-    def isValidMove(self, c) -> bool:
+    def isValidMoveForFoundation(self, c) -> bool:
         """Checks that card placement is valid into foundation pile.
 
         Keyword arguments:
@@ -130,11 +130,11 @@ class GameController:
         """
         f = self.m.getFoundations()
         s = c.getSuit()
-        v = c.getValue()
+        v = c.getNumber()
 
         if(f[s] == None and v == 1):
             return True
-        elif(f[s] != None and v - f[s].getValue <= 1):
+        elif(f[s] != None and v - f[s].getNumber <= 1):
             return True
             
         return False
@@ -143,4 +143,4 @@ class GameController:
         """Updates the view the controller is connected to.
         In this case, it is the gameView.
         """
-        self.v.updateView(m)
+        self.v.updateView(self.m)
