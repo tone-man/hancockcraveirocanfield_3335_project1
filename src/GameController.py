@@ -18,11 +18,11 @@ class GameController:
         st -- source tableau
         dt -- destination 
         """
-        c = st.peek()
+        c = st.index(0)
 
         if(self.isValidMove(c, dt)):
-            c = st.pop
-            dt.push(c)
+            c = st.pop(0)
+            dt.append(0, c)
             self.updateView()
 
 
@@ -35,10 +35,10 @@ class GameController:
         dfcIdx -- destination freecell index
         """
         fc = self.m.getFreeCells()
-        c = st.peek()
+        c = st.index(0)
 
         if(self.isValidMove(c, dfcIdx)):
-            c = st.pop()
+            c = st.pop(0)
             fc[dfcIdx] = c
             self.updateView()
 
@@ -54,7 +54,7 @@ class GameController:
 
         if(self.isValidMove(c, dt)):
             fc[sfcIdx] = None
-            dt.push(c)
+            dt.append(0, c)
             self.updateView()
 
     def moveFoundation(self, t) -> None:
@@ -63,10 +63,10 @@ class GameController:
         Keyword arguments:
         t -- source tableau
         """
-        c = t.peek()
+        c = t.index(0)
 
         if(self.isValidMove(c)):
-            c = t.pop()
+            c = t.pop(0)
             f[s] = c
             self.updateView()
 
@@ -92,7 +92,7 @@ class GameController:
         dt -- destination tableau
         """
 
-        topC = dt.peek() #Top Card of Destination Tableau
+        topC = dt.index(0) #Top Card of Destination Tableau
         s = c.getSuit()
 
         if((s == 0 or s == 1) and (topC.getSuit() == 2 or topC.getSuit() == 3)):
