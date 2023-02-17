@@ -3,7 +3,9 @@ from View import View
 from GameController import GameController
 import random
 
-random.seed(5555)
+seed = 5555
+random.seed(seed)
+print("Seed:", seed)
 b = Board(4)
 v = View()
 c = GameController(b,v)
