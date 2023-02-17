@@ -77,9 +77,9 @@ class Board:
                     return False
             
         # Equality of Freecells
-        oFreeCell = o.getFreeCells
+        oFreeCell = o.getFreeCells()
 
-        for i in len(self.freeCells):
+        for i in range(len(self.freeCells)):
             if self.freeCells[i] != oFreeCell[i]:
                 return False
 

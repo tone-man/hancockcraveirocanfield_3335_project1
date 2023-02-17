@@ -1,20 +1,8 @@
-
-class Node:
-	"""Constructs the node for the priority queue used in the a* search.
-
-        Keyword arguments:
-        data -- data or cards that go into the node
-        p -- priority/heuristic for the nodes
-    """
-
-	def __init__(self, value, p):
-        self.data = value
+class pqNode:
+    def __init__(self, d, p):
+        self.data = d
         self.priority = p
-        self.next = []  # All edges of this node
-        self.transition = None  # Tuple defining state movement
-
-	def addNext(n):
-        self.next.append(n)
+        self.next = None
 
 
 class PriorityQueue:
@@ -43,14 +31,14 @@ class PriorityQueue:
         if self.isEmpty() == True:
 
             # Adds node if queue is empty
-            self.front = Node(value, priority)
+            self.front = pqNode(value, priority)
 
         else:
 
             # Checks first node's priority
             if self.front.priority > priority:
 
-                newNode = Node(value, priority)
+                newNode = pqNode(value, priority)
                 newNode.next = self.front
                 self.front = newNode
 
@@ -65,7 +53,7 @@ class PriorityQueue:
                         break
                     temp = temp.next
 
-                newNode = Node(value, priority)
+                newNode = pqNode(value, priority)
                 newNode.next = temp.next
                 temp.next = newNode
 
@@ -74,22 +62,23 @@ class PriorityQueue:
 
         # Checks Queue
         if self.isEmpty() == True:
-            return
+            return None
 
         else:
 
-            # Removes Node with highest priority and updates the queue
+            # Removes pqNode with highest priority and updates the queue
+            data = self.front.data
             self.front = self.front.next
-            return
+            return data
 
     # Returns node with highest priority
     def pqPeek(self):
 
         # Checks queue and prints node
         if self.isEmpty() == True:
-            return
+            return None
         else:
-            print(self.front.data)
+            return self.front.data
 
     # Prints the queue
     def pqtraverse(self):
@@ -103,17 +92,18 @@ class PriorityQueue:
                 print(temp.data, end=" ")
                 temp = temp.next
 
-
+from Node import Node
 if __name__ == "__main__":
 
     # Test Code
     pq = PriorityQueue()
-    pq.pqPush(8, 1)
-    pq.pqPush(6, 3)
-    pq.pqPush(5, 2)
-    pq.pqPush(7, 0)
-    pq.pqPeek()
-    pq.pqPop()
+    pq.pqPush(Node(1, 1), 1)
+    pq.pqPush(Node(3, 3), 3)
+    pq.pqPush(Node(2, 2), 2)
+    pq.pqPush(Node(0, 0), 0)
+    print(pq.pqPeek())
+    n = pq.pqPop()
+    print(n.data)
     pq.pqtraverse()
 
 

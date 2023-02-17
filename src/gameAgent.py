@@ -1,8 +1,10 @@
 from Board import Board
-from Queue import Node, PriorityQueue
+from Queue import PriorityQueue
 from GameController import GameController
 from Card import Card
 from copy import deepcopy
+from View import View
+from Node import Node
 
 class gameAgent:
     def __init__(self, b: Board, c: GameController):
@@ -23,10 +25,8 @@ class gameAgent:
         '''
 
         self.search(self.b)
-        self.execute()
+        #self.execute()
 
-
-        pass
     
     def search(self, b : Board) -> list:
         '''
@@ -41,33 +41,38 @@ class gameAgent:
             return path
         
         frontier = PriorityQueue()
-        frontier.pqPush(node)
-        reached = [b] #if we have reached a state, we should not check it again
+        frontier.pqPush(node, 1)
 
+        reached = [b] #if we have reached a state, we should not check it again
 
         while not (frontier.isEmpty() and len(reached) < self.maxNodes):
             node = frontier.pqPop()
+            print(node)
             self.expand(node) #Find node's children
 
             for child in node.next:
-                b = child.data
+                c = child.data
 
-                if self.isGoal(b):
-                    return child
-                if reached.index(b) == -1:
-                    reached.push(b)
-                    frontier.pqPush(child)
+                if self.isGoal(c):
+                    path.append(child)
+                    return path
+
+                elif (reached.count(c) == 0):
+                    reached.insert(0, c)
+                    #insert h calc here
+                    newNode = Node(c, 1)
+                    frontier.pqPush(newNode, 1)
 
         return path
 
-    def expand(self, n: Node) -> None:
+    def expand(self, node: Node) -> None:
         '''
         Expands node n to find children in state space
 
         Keyword arguments:
-        n -- node in question
+        node -- node in question
         '''
-        board = n.data #get the boards state
+        board = node.data #get the boards state
 
         #simulate moving top tab card to another tab
 
@@ -77,16 +82,20 @@ class gameAgent:
         freeCells = board.getFreeCells()
         foundations = board.getFoundations()
 
-        for tab in tabs:
-            card = tab[0]
+        for t in range(len(tabs)):
+            card = tabs[t][0]
 
-            for i in range(len(tabs) - curTab):
-                if self.controller.isValidMoveForTab(card, tabs[i + curTab]):
+            for i in range(len(tabs)):
+
+                if t == i:
+                    pass
+                
+                if self.controller.isValidMoveForTab(card, tabs[i]):
                     copyB = deepcopy(board) # making a deep copy of board to make a new state
                     copyTabs = copyB.getTableaus()
 
-                    copyC = copyTabs[curTab].pop(0)
-                    copyTabs[i + curTab].insert(0, copyC)
+                    copyC = copyTabs[t].pop(0)
+                    copyTabs[i].insert(0, copyC)
 
                     node.addNext(Node(copyB, 1))
     
@@ -97,7 +106,7 @@ class gameAgent:
             card = tabs[t][0]
 
             for i in range(len(freeCells)):
-
+                
                 #tab to freeCell
                 if self.controller.isValidMoveForFreeCell(card, i):
                     copyB = deepcopy(board)
@@ -108,18 +117,18 @@ class gameAgent:
                     copyFC[i] = copyC
 
                     node.addNext(Node(copyB, 1))
+                    break
             
-            for i in range(len(foundations)):
                 #tab to foundation
-                if self.controller.isValidMoveForFoundation(card):
-                    copyB = deepcopy(board)
-                    copyTab = copyB.getTableau(t)
-                    copyF = copyB.getFoundations()
+            if self.controller.isValidMoveForFoundation(card):
+                copyB = deepcopy(board)
+                copyTab = copyB.getTableau(t)
+                copyF = copyB.getFoundations()
 
-                    copyC = copyTab.pop(0)
-                    copyF[copyC.getSuit()] = copyC
+                copyC = copyTab.pop(0)
+                copyF[copyC.getSuit()] = copyC
 
-                    node.addNext(Node(copyB, 1))
+                node.addNext(Node(copyB, 1))
 
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
@@ -127,18 +136,30 @@ class gameAgent:
 
             if (card != None): #Only do this if cell is NOT empty
                 #Card to tab
-                for t in len(tabs):
+                for t in range(len(tabs)):
                     if(self.controller.isValidMoveForTab(card, tabs[t])):
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
 
                         copyC = copyFC[i]
-                        copyTab = 
+                        copyTab.insert(0, copyC)
                         copyFC = None
-                #Card to foundation
 
-        
+                        node.addNext(Node(copyB, 1))
+                #Card to foundation
+                
+                if(self.controller.isValidMoveForFoundation(card)):
+                    copyB = deepcopy(board)
+                    copyF = copyB.getFoundations()
+                    copyFC = copyB.getFreeCells()
+
+                    copyC = copyFC[i]
+                    copyF[copyC.getSuit()] = copyC
+                    copyC = None
+
+                    node.addNext(Node(copyB, 1))
+    
 
     def execute(self) -> None:
         '''
@@ -146,7 +167,7 @@ class gameAgent:
         '''
         pass
 
-    def isGoal(s :Board) -> None:
+    def isGoal(self, s :Board) -> None:
         '''
         Checks if the board is in a goal state.
 
