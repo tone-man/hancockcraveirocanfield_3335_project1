@@ -1,10 +1,10 @@
 
-class pqNode:
+class hNode:
     """Constructs the node for the priority queue used in the a* search.
 
         Keyword arguments:
         data -- data or cards that go into the node
-        p -- priority orders the nodes
+        p -- priority/heuristic for the nodes
         next -- gets the next node
     """
 
@@ -42,14 +42,14 @@ class PriorityQueue:
 		if self.isEmpty() == True:
 			
 			# Adds node if queue is empty
-			self.front = pqNode(value, priority)
+			self.front = hNode(value, priority)
 			
 		else:
 			
 			# Checks first node's priority
 			if self.front.priority > priority:
 				
-				newNode = pqNode(value, priority)
+				newNode = hNode(value, priority)
 				newNode.next = self.front
 				self.front = newNode
 								
@@ -64,7 +64,7 @@ class PriorityQueue:
 						break
 					temp = temp.next
 				
-				newNode = pqNode(value, priority)
+				newNode = hNode(value, priority)
 				newNode.next = temp.next
 				temp.next = newNode
 	
