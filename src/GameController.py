@@ -84,7 +84,7 @@ class GameController:
         s = c.getSuit()
 
         if(self.isValidMoveForFoundation(c)):
-            fc[idx] = None
+            fc[fcIdx] = None
             f[s] = c
             self.updateView()
 
