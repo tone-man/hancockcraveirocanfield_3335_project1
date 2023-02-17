@@ -1,7 +1,8 @@
 from Board import Board
-from Queue import pqNode, PriorityQueue
+from Queue import Node, PriorityQueue
 from GameController import GameController
 from Card import Card
+from copy import deepcopy
 
 class gameAgent:
     def __init__(self, b: Board, c: GameController):
@@ -13,7 +14,7 @@ class gameAgent:
         c -- controller for agent to interact with board
         '''
         self.b = b
-        self.c = c
+        self.controller = c
         self.maxNodes = 100
 
     def solve(self):
@@ -33,14 +34,16 @@ class gameAgent:
         goal state. If goal state is not found before reaching memory
         cap, it will return path to best possible state.
         '''
+        node = Node(b, 1) #root Tuple
+        path = [node]
 
-        node = pqNode(b, 1)
         if self.isGoal(self.b):
-            return node
+            return path
         
         frontier = PriorityQueue()
         frontier.pqPush(node)
-        reached = [b]
+        reached = [b] #if we have reached a state, we should not check it again
+
 
         while not (frontier.isEmpty() and len(reached) < self.maxNodes):
             node = frontier.pqPop()
@@ -55,17 +58,87 @@ class gameAgent:
                     reached.push(b)
                     frontier.pqPush(child)
 
-        #Need to return failure somehow
+        return path
 
-    def expand(self, n: pqNode) -> None:
+    def expand(self, n: Node) -> None:
         '''
         Expands node n to find children in state space
 
         Keyword arguments:
         n -- node in question
         '''
+        board = n.data #get the boards state
+
+        #simulate moving top tab card to another tab
+
+        curTab = 0 #counter to reduce repeat checking
+
+        tabs = board.getTableaus()
+        freeCells = board.getFreeCells()
+        foundations = board.getFoundations()
+
+        for tab in tabs:
+            card = tab[0]
+
+            for i in range(len(tabs) - curTab):
+                if self.controller.isValidMoveForTab(card, tabs[i + curTab]):
+                    copyB = deepcopy(board) # making a deep copy of board to make a new state
+                    copyTabs = copyB.getTableaus()
+
+                    copyC = copyTabs[curTab].pop(0)
+                    copyTabs[i + curTab].insert(0, copyC)
+
+                    node.addNext(Node(copyB, 1))
+    
+            curTab += 1
         
-        pass
+        #simulate to freeCell and foundation movements
+        for t in range(len(tabs)):
+            card = tabs[t][0]
+
+            for i in range(len(freeCells)):
+
+                #tab to freeCell
+                if self.controller.isValidMoveForFreeCell(card, i):
+                    copyB = deepcopy(board)
+                    copyTab = copyB.getTableau(t)
+                    copyFC = copyB.getFreeCells()
+
+                    copyC = copyTab.pop(0)
+                    copyFC[i] = copyC
+
+                    node.addNext(Node(copyB, 1))
+            
+            for i in range(len(foundations)):
+                #tab to foundation
+                if self.controller.isValidMoveForFoundation(card):
+                    copyB = deepcopy(board)
+                    copyTab = copyB.getTableau(t)
+                    copyF = copyB.getFoundations()
+
+                    copyC = copyTab.pop(0)
+                    copyF[copyC.getSuit()] = copyC
+
+                    node.addNext(Node(copyB, 1))
+
+        #simulate from freeCell movements to tabs and foundations
+        for i in range(len(freeCells)):
+            card = freeCells[i]
+
+            if (card != None): #Only do this if cell is NOT empty
+                #Card to tab
+                for t in len(tabs):
+                    if(self.controller.isValidMoveForTab(card, tabs[t])):
+                        copyB = deepcopy(board)
+                        copyTab = copyB.getTableau(t)
+                        copyFC = copyB.getFreeCells()
+
+                        copyC = copyFC[i]
+                        copyTab = 
+                        copyFC = None
+                #Card to foundation
+
+        
 
     def execute(self) -> None:
         '''

@@ -53,8 +53,8 @@ class GameController:
         c = fc[sfcIdx]
 
         if(self.isValidMoveForTab(c, dt)):
-            fc[sfcIdx] = None
             dt.insert(0, c)
+            fc[sfcIdx] = None
             self.updateView()
 
     def moveTabtoFoundation(self, t) -> None:
@@ -84,8 +84,8 @@ class GameController:
         s = c.getSuit()
 
         if(self.isValidMoveForFoundation(c)):
-            fc[fcIdx] = None
             f[s] = c
+            fc[fcIdx] = None
             self.updateView()
 
     def isValidMoveForTab(self, c, dt) -> bool:

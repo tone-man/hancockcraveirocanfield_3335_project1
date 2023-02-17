@@ -1,4 +1,4 @@
-from Queue import hNode 
+from Queue import Node 
 
 class Graph:
     """Constructs the Graph for a* search.
@@ -14,7 +14,7 @@ class Graph:
     # A graph is a list of list
     # Initializing the graph with size as # of nodes
 
-    hn = hNode(1, 1)
+    hn = Node(1, 1)
     def __init__(self, nodes):
         self.N = nodes
         self.graph = [None] * self.N
@@ -28,12 +28,12 @@ class Graph:
         end -- destination node
     """
         # Adds a node to the start node
-        node = hNode(end)
+        node = Node(end)
         node.next = self.graph[start]
         self.graph[start] = node
  
        # A adds a node to the end node
-        node = hNode(start)
+        node = Node(start)
         node.next = self.graph[end]
         self.graph[end] = node
  
