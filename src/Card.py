@@ -38,4 +38,10 @@ class Card:
 
         return str(self.number) + "--- \n" + self.suitToChar() + "  | \n" + "---- "
 
-  
+    def __eq__(self, o):
+
+        if isinstance(o, Card):
+            if((self.number == o.getNumber()) and (self.suit == o.getSuit())):
+                return True
+    
+        return False

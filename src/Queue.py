@@ -1,18 +1,22 @@
 
-class hNode:
+class Node:
     """Constructs the node for the priority queue used in the a* search.
 
         Keyword arguments:
         data -- data or cards that go into the node
         p -- priority/heuristic for the nodes
-        next -- gets the next node
     """
+	def __init__(self, value, p):
+		self.data = value
+		self.priority = p 
+		self.next = [] #All edges of this node
+		self.transition = None #Tuple defining state movement
 
+	def addNext(n : Node):
+		self.next.append(n)
 	
-    def __init__(self, value, p):
-        self.data = value
-        self.priority = p
-        self.next = None
+
+
 		
 
 class PriorityQueue:
@@ -25,8 +29,7 @@ class PriorityQueue:
 		pqPeek -- Looks at highest priority node and prints it
 		pqTraverse -- Prints out the queue
 	"""
-  
-	
+
 	def __init__(self):
 		
 		self.front = None
@@ -42,14 +45,14 @@ class PriorityQueue:
 		if self.isEmpty() == True:
 			
 			# Adds node if queue is empty
-			self.front = hNode(value, priority)
+			self.front = Node(value, priority)
 			
 		else:
 			
 			# Checks first node's priority
 			if self.front.priority > priority:
 				
-				newNode = hNode(value, priority)
+				newNode = Node(value, priority)
 				newNode.next = self.front
 				self.front = newNode
 								
@@ -64,7 +67,7 @@ class PriorityQueue:
 						break
 					temp = temp.next
 				
-				newNode = hNode(value, priority)
+				newNode = Node(value, priority)
 				newNode.next = temp.next
 				temp.next = newNode
 	

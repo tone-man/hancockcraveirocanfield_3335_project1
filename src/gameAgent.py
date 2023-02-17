@@ -27,11 +27,11 @@ class gameAgent:
 
         pass
     
-    def search(self, b : Board):
+    def search(self, b : Board) -> list:
         '''
         Searches state space using MBA* (Memory Bounded A*) to find
         goal state. If goal state is not found before reaching memory
-        cap, it will return best possible state.
+        cap, it will return path to best possible state.
         '''
 
         node = pqNode(b, 1)

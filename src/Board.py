@@ -59,3 +59,29 @@ class Board:
 
     def setFoundations(self, foundations):
         self.foundations = foundations
+
+    def __eq__(self, o):
+        
+        if not isinstance(o, Board):
+            return False
+
+        for i in range(len(self.tableaus)):
+
+            # Equality of Tabs
+            oTab = o.getTableau(i)
+            if(len(self.tableaus[i]) != len(oTab)):
+                return False
+
+            for j in range(len(self.tableaus[i])):
+                if self.tableaus[i][j] != oTab[j]:
+                    return False
+            
+        # Equality of Freecells
+        oFreeCell = o.getFreeCells
+
+        for i in len(self.freeCells):
+            if self.freeCells[i] != oFreeCell[i]:
+                return False
+
+        #Knowing the tabs and freecells are equal allows us to conclude the foundations are also equal
+        return True
