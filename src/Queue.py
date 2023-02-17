@@ -1,20 +1,37 @@
 
 class Node:
-    """Constructs the node for the priority queue used in the a* search.
+	"""Constructs the node for the priority queue used in the a* search.
 
         Keyword arguments:
         data -- data or cards that go into the node
         p -- priority/heuristic for the nodes
     """
-	def __init__(self, value, p):
-		self.data = value
+	def __init__(self, data, p):
+		self.data = data
 		self.priority = p 
 		self.next = [] #All edges of this node
 		self.transition = None #Tuple defining state movement
 
-	def addNext(n : Node):
+	# Gets data for the node
+	def getData(self):
+		return self.data
+
+	# Sets data for the node
+	def setData(self, nodeData, p):
+		self.data = nodeData
+		self.priority = p
+
+	# Gets the next node
+	def getNode(self):
+		return self.next
+
+	# Sets the next node
+	def setNode(self, nextNode):
+		self.next = nextNode
+
+	def addNext(self, n : Node):
 		self.next.append(n)
-	
+
 
 
 		
