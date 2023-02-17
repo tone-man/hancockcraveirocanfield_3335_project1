@@ -98,7 +98,11 @@ class GameController:
         if c == None:
             return False
 
-        topC = dt[0] #Top Card of Destination Tableau
+        if len(dt) == 0:
+            return True
+
+        topC = dt[0]  #Top Card of Destination Tableau
+
         s = c.getSuit()
 
         if((s == 0 or s == 1) and (topC.getSuit() == 2 or topC.getSuit() == 3)):

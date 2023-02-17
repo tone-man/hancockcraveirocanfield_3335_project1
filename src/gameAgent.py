@@ -17,7 +17,7 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 100
+        self.maxNodes = 1000
 
     def solve(self):
         '''
@@ -45,9 +45,8 @@ class gameAgent:
 
         reached = [b] #if we have reached a state, we should not check it again
 
-        while not (frontier.isEmpty() and len(reached) < self.maxNodes):
+        while not (frontier.isEmpty() or len(reached) > self.maxNodes):
             node = frontier.pqPop()
-            print(node)
             self.expand(node) #Find node's children
 
             for child in node.next:
@@ -63,6 +62,8 @@ class gameAgent:
                     newNode = Node(c, 1)
                     frontier.pqPush(newNode, 1)
 
+        v = View()
+        v.updateView(node.data)
         return path
 
     def expand(self, node: Node) -> None:
@@ -76,48 +77,50 @@ class gameAgent:
 
         #simulate moving top tab card to another tab
 
-        curTab = 0 #counter to reduce repeat checking
-
         tabs = board.getTableaus()
+
         freeCells = board.getFreeCells()
         foundations = board.getFoundations()
 
         for t in range(len(tabs)):
-            card = tabs[t][0]
 
-            for i in range(len(tabs)):
+            if(len(tabs[t]) > 0):
 
-                if t == i:
-                    pass
-                
-                if self.controller.isValidMoveForTab(card, tabs[i]):
-                    copyB = deepcopy(board) # making a deep copy of board to make a new state
-                    copyTabs = copyB.getTableaus()
+                card = tabs[t][0]
 
-                    copyC = copyTabs[t].pop(0)
-                    copyTabs[i].insert(0, copyC)
+                for i in range(len(tabs)):
 
-                    node.addNext(Node(copyB, 1))
-    
-            curTab += 1
+                    if t == i:
+                        pass
+                    
+                    if self.controller.isValidMoveForTab(card, tabs[i]):
+                        copyB = deepcopy(board) # making a deep copy of board to make a new state
+                        copyTabs = copyB.getTableaus()
+
+                        copyC = copyTabs[t].pop(0)
+                        copyTabs[i].insert(0, copyC)
+
+                        node.addNext(Node(copyB, 1))
         
         #simulate to freeCell and foundation movements
         for t in range(len(tabs)):
-            card = tabs[t][0]
 
-            for i in range(len(freeCells)):
-                
-                #tab to freeCell
-                if self.controller.isValidMoveForFreeCell(card, i):
-                    copyB = deepcopy(board)
-                    copyTab = copyB.getTableau(t)
-                    copyFC = copyB.getFreeCells()
+            if(len(tabs[t]) > 0):
+                card = tabs[t][0]
 
-                    copyC = copyTab.pop(0)
-                    copyFC[i] = copyC
+                for i in range(len(freeCells)):
+                    
+                    #tab to freeCell
+                    if self.controller.isValidMoveForFreeCell(card, i):
+                        copyB = deepcopy(board)
+                        copyTab = copyB.getTableau(t)
+                        copyFC = copyB.getFreeCells()
 
-                    node.addNext(Node(copyB, 1))
-                    break
+                        copyC = copyTab.pop(0)
+                        copyFC[i] = copyC
+
+                        node.addNext(Node(copyB, 1))
+                        break
             
                 #tab to foundation
             if self.controller.isValidMoveForFoundation(card):
