@@ -1,5 +1,6 @@
 from Board import Board
 from Queue import pqNode, PriorityQueue
+from Card import Card
 
 class gameAgent:
     def __init__(self, b, c):
@@ -70,12 +71,23 @@ class gameAgent:
         '''
         pass
 
-    def isGoal(self, s) -> None:
+    def isGoal(s :Board) -> None:
         '''
-        Checks if a given state is the goal
-        '''
+        Checks if the board is in a goal state.
 
-    
+        Keyword arguments:
+        s -- board to check
+        '''
+        
+        numgoals = 0
+        for f in s.getFoundations():
+            if isinstance(f, Card):
+                if f.getNumber() == 13:
+                    numgoals += 1
+        if numgoals == 4:
+            return True
+        else:
+            return False
 
     def freeCellHeuristicWilliam(self, node):
         print("FreeCell Heuristic")
