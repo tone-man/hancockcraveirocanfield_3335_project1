@@ -12,7 +12,6 @@ class Node:
         self.data = value
         self.hval = h
         self.next = []  # All edges of this node
-        self.transition = None  # Tuple defining state movement
   
     def addNext(self, n):
         self.next.append(n)

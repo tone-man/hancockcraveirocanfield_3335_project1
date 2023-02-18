@@ -17,15 +17,26 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 1000
+        self.maxNodes = 2000
 
     def solve(self):
         '''
         Solves the freeCell game, given the board it was given.
         '''
+        print("Agent Initiated!")
+        i = 0
+        while not self.isGoal(self.b):
 
-        self.search(self.b)
-        #self.execute()
+            print("Round :", i)
+            print("-------------------------")
+            print("Searching State Space...")
+
+            path = self.search(self.b) #returns solution path to input in controller
+            self.b = path.pop(len(path) - 1).data
+            print("Search Complete")
+            #self.execute(path)
+
+            i += 1
 
     
     def search(self, b : Board) -> list:
@@ -54,16 +65,20 @@ class gameAgent:
 
                 if self.isGoal(c):
                     path.append(child)
+                    v = View()
+                    v.updateView(c)
                     return path
 
                 elif (reached.count(c) == 0):
-                    reached.insert(0, c)
+                    reached.append(c)
+
                     #insert h calc here
-                    newNode = Node(c, 1)
-                    frontier.pqPush(newNode, 1)
+                    newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c))
+                    frontier.pqPush(newNode, newNode.hval)
 
         v = View()
         v.updateView(node.data)
+        path.append(node)
         return path
 
     def expand(self, node: Node) -> None:
@@ -93,7 +108,7 @@ class gameAgent:
                     if t == i:
                         pass
                     
-                    if self.controller.isValidMoveForTab(card, tabs[i]):
+                    if self.isValidMoveForTab(card, tabs[i]):
                         copyB = deepcopy(board) # making a deep copy of board to make a new state
                         copyTabs = copyB.getTableaus()
 
@@ -123,15 +138,15 @@ class gameAgent:
                         break
             
                 #tab to foundation
-            if self.controller.isValidMoveForFoundation(card):
-                copyB = deepcopy(board)
-                copyTab = copyB.getTableau(t)
-                copyF = copyB.getFoundations()
+                if self.isValidMoveForFoundation(board, card):
+                    copyB = deepcopy(board)
+                    copyTab = copyB.getTableau(t)
+                    copyF = copyB.getFoundations()
 
-                copyC = copyTab.pop(0)
-                copyF[copyC.getSuit()] = copyC
-
-                node.addNext(Node(copyB, 1))
+                    copyC = copyTab.pop(0)
+                    copyF[copyC.getSuit()] = copyC
+                    
+                    node.addNext(Node(copyB, 1))
 
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
@@ -140,7 +155,7 @@ class gameAgent:
             if (card != None): #Only do this if cell is NOT empty
                 #Card to tab
                 for t in range(len(tabs)):
-                    if(self.controller.isValidMoveForTab(card, tabs[t])):
+                    if(self.isValidMoveForTab(card, tabs[t])):
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
@@ -152,7 +167,7 @@ class gameAgent:
                         node.addNext(Node(copyB, 1))
                 #Card to foundation
                 
-                if(self.controller.isValidMoveForFoundation(card)):
+                if(self.isValidMoveForFoundation(board, card)):
                     copyB = deepcopy(board)
                     copyF = copyB.getFoundations()
                     copyFC = copyB.getFreeCells()
@@ -160,7 +175,7 @@ class gameAgent:
                     copyC = copyFC[i]
                     copyF[copyC.getSuit()] = copyC
                     copyC = None
-                    copyFC[i] = None
+
                     node.addNext(Node(copyB, 1))
     
 
@@ -194,5 +209,104 @@ class gameAgent:
     def freeCellHeuristicRyan(self, node):
         print("FreeCell Heuristic")
 
-    def freeCellHeuristicAntonio(self, node):
-        print("FreeCell Heuristic")
+    def freeCellHeuristicAntonio(self, b: Board):
+        CARD_WEIGHT = 2
+        SORT_WEIGHT = 1
+        tabs = b.getTableaus()
+        foundations = b.getFoundations()
+        h = 0
+
+        for tab in tabs:
+            copytab = deepcopy(tab)
+            copytab.sort()
+            
+            for i in range(len(tab)):
+            #find distance of card from sorted card
+            #each cell offset is worth 1 point
+                diff = abs(i - tab.index(copytab[i]))
+                h += diff * SORT_WEIGHT
+
+        #Added weight so foundations are prioritized
+        for f in foundations:
+            cardsOfSuitLeft = 0
+
+            if f:
+                cardsOfSuitLeft = f.getNumber()
+
+            h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
+
+        #print(h)
+        return h
+
+    def isValidMoveForTab(self, c, dt) -> bool:
+        """Checks that card placement is valid.
+
+        Keyword arguments:
+        c -- card in question
+        dt -- destination tableau
+        """
+        if c == None:
+            return False
+
+        if len(dt) == 0:
+            return True
+
+        topC = dt[0]  #Top Card of Destination Tableau
+
+        s = c.getSuit()
+
+        if((s == 0 or s == 1) and (topC.getSuit() == 2 or topC.getSuit() == 3)):
+            if(topC.getNumber() - c.getNumber() == 1):
+                return True
+
+        elif((s == 2 or s == 3) and (topC.getSuit() == 0 or topC.getSuit() == 1)):
+            if(topC.getNumber() - c.getNumber() == 1):
+                return True
+
+
+        return False
+    
+    def isValidMoveForFreeCell(self, b, c, fcIdx) -> bool:
+        """Checks that card placement is valid into freecell.
+
+        Keyword arguments:
+        b -- board state
+        c -- card in question
+        fc -- destination freecell index
+        """
+
+        if c == None:
+            return False
+        f = b.getFreeCells()
+
+        if(f[fcIdx] == None):
+            return True
+
+        return False
+
+    
+    def isValidMoveForFoundation(self, b, c) -> bool:
+        """Checks that card placement is valid into foundation pile.
+
+        Keyword arguments:
+        b -- board state
+        c -- card in question
+        
+        """
+        if c == None:
+            return False
+
+        f = b.getFoundations()
+        s = c.getSuit()
+        v = c.getNumber()
+
+        if(f[s] == None and v == 1):
+            return True
+        elif(f[s] != None):
+            if(v - f[s].getNumber() == 1):
+                return True
+            
+        return False
+
+
+        

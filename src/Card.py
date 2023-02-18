@@ -45,3 +45,11 @@ class Card:
                 return True
     
         return False
+
+    def __lt__(self, o):
+
+        if isinstance(o, Card):
+            if((self.number < o.getNumber())):
+                return True
+        
+        return False
