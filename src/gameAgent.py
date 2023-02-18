@@ -17,13 +17,14 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 1000
+        self.maxNodes = 100
 
     def solve(self):
         '''
         Solves the freeCell game, given the board it was given.
         '''
 
+        print("Searching for next Board State...")
         self.search(self.b)
         #self.execute()
 
@@ -116,11 +117,11 @@ class gameAgent:
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
 
-                        copyC = copyTab.pop(0)
-                        copyFC[i] = copyC
+                            copyC = copyTab.pop(0)
+                            copyFC[i] = copyC
 
-                        node.addNext(Node(copyB, 1))
-                        break
+                            node.addNext(Node(copyB, 1))
+                            break
             
                 #tab to foundation
             if self.controller.isValidMoveForFoundation(card):
@@ -194,5 +195,11 @@ class gameAgent:
     def freeCellHeuristicRyan(self, node):
         print("FreeCell Heuristic")
 
-    def freeCellHeuristicAntonio(self, node):
-        print("FreeCell Heuristic")
+    def calcHueristicToni(self, s : Board):
+        '''
+        calculates a h(n) based on difference between
+        sorted and unsorted card positions. 
+        '''
+        tabs = s.getTableaus()
+        h = 0
+        
