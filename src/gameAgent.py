@@ -174,8 +174,8 @@ class gameAgent:
 
                     copyC = copyFC[i]
                     copyF[copyC.getSuit()] = copyC
-                    copyC = None
-
+                    copyFC[i] = None
+                    
                     node.addNext(Node(copyB, 1))
     
 
