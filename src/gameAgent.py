@@ -24,7 +24,6 @@ class gameAgent:
         Solves the freeCell game, given the board it was given.
         '''
 
-        print("Searching for next Board State...")
         self.search(self.b)
         #self.execute()
 
@@ -110,19 +109,18 @@ class gameAgent:
                 card = tabs[t][0]
 
                 for i in range(len(freeCells)):
+                    
+                    #tab to freeCell
+                    if freeCells[i] == None:
+                        copyB = deepcopy(board)
+                        copyTab = copyB.getTableau(t)
+                        copyFC = copyB.getFreeCells()
 
-                    if (freeCells[i] == None):
-                        #tab to freeCell
-                        if self.controller.isValidMoveForFreeCell(card, i):
-                            copyB = deepcopy(board)
-                            copyTab = copyB.getTableau(t)
-                            copyFC = copyB.getFreeCells()
+                        copyC = copyTab.pop(0)
+                        copyFC[i] = copyC
 
-                            copyC = copyTab.pop(0)
-                            copyFC[i] = copyC
-
-                            node.addNext(Node(copyB, 1))
-                            break
+                        node.addNext(Node(copyB, 1))
+                        break
             
                 #tab to foundation
             if self.controller.isValidMoveForFoundation(card):
@@ -149,7 +147,7 @@ class gameAgent:
 
                         copyC = copyFC[i]
                         copyTab.insert(0, copyC)
-                        copyFC = None
+                        copyFC[i] = None
 
                         node.addNext(Node(copyB, 1))
                 #Card to foundation
@@ -196,11 +194,5 @@ class gameAgent:
     def freeCellHeuristicRyan(self, node):
         print("FreeCell Heuristic")
 
-    def calcHueristicToni(self, s : Board):
-        '''
-        calculates a h(n) based on difference between
-        sorted and unsorted card positions. 
-        '''
-        tabs = s.getTableaus()
-        h = 0
-        
+    def freeCellHeuristicAntonio(self, node):
+        print("FreeCell Heuristic")
