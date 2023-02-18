@@ -17,7 +17,7 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 100
+        self.maxNodes = 1000
 
     def solve(self):
         '''
@@ -111,7 +111,7 @@ class gameAgent:
 
                 for i in range(len(freeCells)):
 
-                    if (freeCells[i] != None):
+                    if (freeCells[i] == None):
                         #tab to freeCell
                         if self.controller.isValidMoveForFreeCell(card, i):
                             copyB = deepcopy(board)
