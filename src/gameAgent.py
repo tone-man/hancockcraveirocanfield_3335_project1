@@ -111,7 +111,7 @@ class gameAgent:
                 for i in range(len(freeCells)):
                     
                     #tab to freeCell
-                    if self.controller.isValidMoveForFreeCell(card, i):
+                    if freeCells[i] == None:
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
@@ -147,7 +147,7 @@ class gameAgent:
 
                         copyC = copyFC[i]
                         copyTab.insert(0, copyC)
-                        copyFC = None
+                        copyFC[i] = None
 
                         node.addNext(Node(copyB, 1))
                 #Card to foundation
