@@ -17,7 +17,8 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 2000
+        self.failureFlag = False
+        self.maxNodes = 2000 
 
     def solve(self):
         '''
@@ -75,11 +76,9 @@ class gameAgent:
                     #insert h calc here
                     newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c), node, child.movetype, child.src, child.dest)
                     frontier.pqPush(newNode, newNode.hval)
-        # Flag to see if the queue is empty to be caught later
-        flag = False 
-        if frontier.isEmpty() == True or \
-           frontier == []:
-            flag = True
+
+        if frontier.isEmpty():
+            self.failureFlag = True
 
         v = View()
         v.updateView(node.data)
