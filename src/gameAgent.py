@@ -18,7 +18,7 @@ class gameAgent:
         self.b = b
         self.controller = c
         self.failureFlag = False
-        self.maxNodes = 2000 
+        self.maxNodes = 1000 
 
     def solve(self):
         '''
@@ -33,7 +33,14 @@ class gameAgent:
             print("Searching State Space...")
 
             path = self.search(self.b) #returns solution path to input in controller
+
+            if self.failureFlag:
+                print("FAILURE: Out of Possible Moves")
+                break
+
             print("Search Complete")
+            print("Beginning Execution")
+            print("-------------------------")
             self.execute(path)
 
             i += 1
@@ -198,20 +205,20 @@ class gameAgent:
         path.reverse()
         for node in path:
             if node.movetype == 1:
-                print("Move card from tab", node.src, "to tab", node.dest)
+                print("Move card from tab", node.src + 1, "to tab", node.dest + 1)
                 self.controller.moveCardBetweenTabs(node.src, node.dest)
             elif node.movetype == 2:
-                print("Move card from tab", node.src, "to free cell", node.dest)
+                print("Move card from tab", node.src + 1, "to free cell", node.dest + 1)
                 self.controller.moveCardToFreeCell(node.src, node.dest)
             elif node.movetype == 3:
-                print("Move card from free cell", node.src, "to tab", node.dest)
+                print("Move card from free cell", node.src + 1, "to tab", node.dest + 1)
                 self.controller.moveCardFromFreeCell(node.src, node.dest)
             elif node.movetype == 4:
-                print("Move card from tab", node.src, "to foundation", node.dest)
-                self.controller.moveTabtoFoundation(node.src, node.dest)
+                print("Move card from tab", node.src + 1, "to foundation", node.dest + 1)
+                self.controller.moveTabtoFoundation(node.src)
             elif node.movetype == 5:
-                print("Move card from free cell", node.src, "to foundation", node.dest)
-                self.controller.moveFreeCelltoFoundation(node.src, node.dest)
+                print("Move card from free cell", node.src + 1, "to foundation", node.dest + 1)
+                self.controller.moveFreeCelltoFoundation(node.src)
         pass
 
     def isGoal(self, s :Board) -> None:
@@ -239,7 +246,7 @@ class gameAgent:
         print("FreeCell Heuristic")
 
     def freeCellHeuristicAntonio(self, b: Board):
-        CARD_WEIGHT = 2
+        CARD_WEIGHT = 3
         SORT_WEIGHT = 1
         tabs = b.getTableaus()
         foundations = b.getFoundations()
