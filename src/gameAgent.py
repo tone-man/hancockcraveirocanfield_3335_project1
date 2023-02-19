@@ -26,7 +26,7 @@ class gameAgent:
         '''
         print("Agent Initiated!")
         i = 0
-        while (not self.failureFlag) or (not self.isGoal(self.b)):
+        while (not self.failureFlag) and (not self.isGoal(self.b)):
 
             print("Round :", i)
             print("-------------------------")
