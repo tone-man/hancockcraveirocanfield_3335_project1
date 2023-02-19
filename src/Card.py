@@ -25,6 +25,9 @@ class Card:
         suit = self.getSuit()
         if num == None and suit == None:
             return "---- \n" + "|  | \n" + "---- "
+        if num == 1:
+            numstr = "A"
+            return numstr + "-- \n" + self.suitToChar() + "  | \n" + "---- "
         if num >= 10:
             if num == 10:
                 numstr = "10"
