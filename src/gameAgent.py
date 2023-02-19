@@ -34,7 +34,7 @@ class gameAgent:
             path = self.search(self.b) #returns solution path to input in controller
             self.b = path.pop(len(path) - 1).data
             print("Search Complete")
-            #self.execute(path)
+            #self.execute(goalpath)
 
             i += 1
 
@@ -47,6 +47,7 @@ class gameAgent:
         '''
         node = Node(b, 1, None) #root Tuple
         path = [node]
+        goalpath = []
 
         if self.isGoal(self.b):
             return path
@@ -65,12 +66,12 @@ class gameAgent:
 
                 if self.isGoal(c):
                     while child.parent != None:
-                        path.append(node)
+                        goalpath.append(node)
                         child= child.parent
                     path.append(child)
                     v = View()
                     v.updateView(c)
-                    return path
+                    return goalpath
 
                 elif (reached.count(c) == 0):
                     reached.append(c)
@@ -182,10 +183,14 @@ class gameAgent:
                     node.addNext(Node(copyB, 1, node))
     
 
-    def execute(self) -> None:
+    def execute(self, path) -> None:
         '''
         Executes moves given a path.
+
+        Keyword arguments:
+        path -- path to execute
         '''
+        path.reverse()
         pass
 
     def isGoal(self, s :Board) -> None:
