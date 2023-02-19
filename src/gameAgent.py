@@ -26,7 +26,7 @@ class gameAgent:
         '''
         print("Agent Initiated!")
         i = 0
-        while not self.isGoal(self.b):
+        while (not self.failureFlag) or (not self.isGoal(self.b)):
 
             print("Round :", i)
             print("-------------------------")
@@ -35,8 +35,7 @@ class gameAgent:
             path = self.search(self.b) #returns solution path to input in controller
 
             if self.failureFlag:
-                print("FAILURE: Out of Possible Moves")
-                break
+                print("Search ran out of states")
 
             print("Search Complete")
             print("Beginning Execution")
@@ -45,7 +44,11 @@ class gameAgent:
 
             i += 1
 
-    
+        if self.failureFlag:
+            print("Goal State Unreachable, Agent Shutting Down")
+        else:
+            print("Goal State has been reached, Agent Shutting Down")
+
     def search(self, b : Board) -> list:
         '''
         Searches state space using MBA* (Memory Bounded A*) to find
@@ -116,12 +119,19 @@ class gameAgent:
 
                 card = tabs[t][0]
                 src = t
+                emptyTabCount = 0 #Count of empty tabs, we ignore placements of cards past the first one
+                                  #This reduces state spaces so we do not cycle when cards get low
+
                 for i in range(len(tabs)):
 
                     if t == i:
                         pass
+
+                    if(len(tabs[i]) == 0):
+                        emptyTabCount += 1
+
                     #moveCardBetweenTabs
-                    if self.isValidMoveForTab(card, tabs[i]):
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[i]) :
                         copyB = deepcopy(board) # making a deep copy of board to make a new state
                         copyTabs = copyB.getTableaus()
 
@@ -165,12 +175,17 @@ class gameAgent:
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
             card = freeCells[i]
+            emptyTabCount = 0 #Same counter from before when simulating tabtotab
 
             if (card != None): #Only do this if cell is NOT empty
                 #Card to tab
                 #moveCardFromFreeCell
                 for t in range(len(tabs)):
-                    if(self.isValidMoveForTab(card, tabs[t])):
+                    
+                    if(len(tabs) == 0):
+                        emptyTabCount += 1
+
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[t]):
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
@@ -271,7 +286,7 @@ class gameAgent:
         print("FreeCell Heuristic")
 
     def freeCellHeuristicAntonio(self, b: Board):
-        CARD_WEIGHT = 3
+        CARD_WEIGHT = 2
         SORT_WEIGHT = 1
         tabs = b.getTableaus()
         foundations = b.getFoundations()
