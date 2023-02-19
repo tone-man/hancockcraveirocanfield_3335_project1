@@ -18,7 +18,7 @@ class gameAgent:
         self.b = b
         self.controller = c
         self.failureFlag = False
-        self.maxNodes = 1000 
+        self.maxNodes = 1500 
 
     def solve(self):
         '''
@@ -64,6 +64,7 @@ class gameAgent:
         frontier.pqPush(node, 1)
 
         reached = [b] #if we have reached a state, we should not check it again
+        reachedCount = 0 #this limits the len of reached to keep the code efficient
 
         while not (frontier.isEmpty() or len(reached) > self.maxNodes):
             node = frontier.pqPop()
@@ -298,8 +299,12 @@ class gameAgent:
         return h
 
     def freeCellHeuristicAntonio(self, b: Board):
-        CARD_WEIGHT = 2
-        SORT_WEIGHT = 1
+        '''
+        An attempt to improve the basic hueristic by
+        setting h to the how many moves it would take to sort the board,
+        plus the cards left on the board. This h is not admissable unfortunately, as it
+        double counts each movement. :(
+        '''
         tabs = b.getTableaus()
         foundations = b.getFoundations()
         h = 0
@@ -312,7 +317,7 @@ class gameAgent:
             #find distance of card from sorted card
             #each cell offset is worth 1 point
                 diff = abs(i - tab.index(copytab[i]))
-                h += diff * SORT_WEIGHT
+                h += diff
 
         #Added weight so foundations are prioritized
         for f in foundations:
@@ -321,7 +326,7 @@ class gameAgent:
             if f:
                 cardsOfSuitLeft = f.getNumber()
 
-            h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
+            h += (13 - cardsOfSuitLeft)
 
         #print(h)
         return h

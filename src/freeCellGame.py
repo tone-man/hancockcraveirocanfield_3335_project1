@@ -5,7 +5,7 @@ from GameController import GameController
 import random
 from Card import Card
 
-seed = 5555
+seed = random.randint(0, 9999)
 random.seed(seed)
 print("Seed:", seed)
 b = Board(4)
