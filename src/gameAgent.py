@@ -68,7 +68,6 @@ class gameAgent:
                     while child.parent != None:
                         goalpath.append(node)
                         child= child.parent
-                    path.append(child)
                     v = View()
                     v.updateView(c)
                     return goalpath
