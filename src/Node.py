@@ -14,11 +14,14 @@ class Node:
         self.next = []  # All edges of this node
         self.parent = None
 
-    def __init__(self, value, h, p):
+    def __init__(self, value, h, p, m):
         self.data = value
         self.hval = h
         self.next = []  # All edges of this node
         self.parent = p
+        self.movetype = m
 
     def addNext(self, n):
         self.next.append(n)
+
+
