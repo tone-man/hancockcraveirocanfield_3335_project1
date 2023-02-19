@@ -32,9 +32,8 @@ class gameAgent:
             print("Searching State Space...")
 
             path = self.search(self.b) #returns solution path to input in controller
-            self.b = path.pop(len(path) - 1).data
             print("Search Complete")
-            #self.execute(goalpath)
+            self.execute(path)
 
             i += 1
 
@@ -46,9 +45,7 @@ class gameAgent:
         cap, it will return path to best possible state.
         '''
         node = Node(b, 1, None, 0, 0, 0) #root Tuple
-        path = [node]
-        goalpath = []
-
+        path = []
         if self.isGoal(self.b):
             return path
         
@@ -65,12 +62,12 @@ class gameAgent:
                 c = child.data
 
                 if self.isGoal(c):
-                    while child.parent != None:
-                        goalpath.append(node)
-                        child= child.parent
+                    while node.parent != None:
+                        path.append(node)
+                        node = node.parent
                     v = View()
                     v.updateView(c)
-                    return goalpath
+                    return path
 
                 elif (reached.count(c) == 0):
                     reached.append(c)
@@ -86,7 +83,9 @@ class gameAgent:
 
         v = View()
         v.updateView(node.data)
-        path.append(node)
+        while node.parent != None:
+            path.append(node)
+            node = node.parent
         return path
 
     def expand(self, node: Node) -> None:
@@ -198,6 +197,22 @@ class gameAgent:
         path -- path to execute
         '''
         path.reverse()
+        for node in path:
+            if node.movetype == 1:
+                print("Move card from tab", node.src, "to tab", node.dest)
+                self.controller.moveCardBetweenTabs(node.src, node.dest)
+            elif node.movetype == 2:
+                print("Move card from tab", node.src, "to free cell", node.dest)
+                self.controller.moveCardToFreeCell(node.src, node.dest)
+            elif node.movetype == 3:
+                print("Move card from free cell", node.src, "to tab", node.dest)
+                self.controller.moveCardFromFreeCell(node.src, node.dest)
+            elif node.movetype == 4:
+                print("Move card from tab", node.src, "to foundation", node.dest)
+                self.controller.moveTabtoFoundation(node.src, node.dest)
+            elif node.movetype == 5:
+                print("Move card from free cell", node.src, "to foundation", node.dest)
+                self.controller.moveFreeCelltoFoundation(node.src, node.dest)
         pass
 
     def isGoal(self, s :Board) -> None:
