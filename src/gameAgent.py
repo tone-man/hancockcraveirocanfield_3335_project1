@@ -17,7 +17,8 @@ class gameAgent:
         '''
         self.b = b
         self.controller = c
-        self.maxNodes = 2000
+        self.failureFlag = False
+        self.maxNodes = 1500 
 
     def solve(self):
         '''
@@ -25,30 +26,37 @@ class gameAgent:
         '''
         print("Agent Initiated!")
         i = 0
-        while not self.isGoal(self.b):
+        while (not self.failureFlag) and (not self.isGoal(self.b)):
 
             print("Round :", i)
             print("-------------------------")
             print("Searching State Space...")
 
             path = self.search(self.b) #returns solution path to input in controller
-            self.b = path.pop(len(path) - 1).data
+
+            if self.failureFlag:
+                print("Search ran out of states")
+
             print("Search Complete")
-            #self.execute(goalpath)
+            print("Beginning Execution")
+            print("-------------------------")
+            self.execute(path)
 
             i += 1
 
-    
+        if self.failureFlag:
+            print("Goal State Unreachable, Agent Shutting Down")
+        else:
+            print("Goal State has been reached, Agent Shutting Down")
+
     def search(self, b : Board) -> list:
         '''
         Searches state space using MBA* (Memory Bounded A*) to find
         goal state. If goal state is not found before reaching memory
         cap, it will return path to best possible state.
         '''
-        node = Node(b, 1, None, 0) #root Tuple
-        path = [node]
-        goalpath = []
-
+        node = Node(b, 1, None, 0, 0, 0) #root Tuple
+        path = []
         if self.isGoal(self.b):
             return path
         
@@ -56,6 +64,7 @@ class gameAgent:
         frontier.pqPush(node, 1)
 
         reached = [b] #if we have reached a state, we should not check it again
+        reachedCount = 0 #this limits the len of reached to keep the code efficient
 
         while not (frontier.isEmpty() or len(reached) > self.maxNodes):
             node = frontier.pqPop()
@@ -66,27 +75,27 @@ class gameAgent:
 
                 if self.isGoal(c):
                     while child.parent != None:
-                        goalpath.append(node)
-                        child= child.parent
+                        path.append(child)
+                        child = child.parent
                     v = View()
                     v.updateView(c)
-                    return goalpath
+                    return path
 
                 elif (reached.count(c) == 0):
                     reached.append(c)
 
                     #insert h calc here
-                    newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c), node, child.movetype)
+                    newNode = Node(c, node.hval + self.basicHueristic(c), node, child.movetype, child.src, child.dest)
                     frontier.pqPush(newNode, newNode.hval)
-        # Flag to see if the queue is empty to be caught later
-        flag = False 
-        if frontier.isEmpty() == True or \
-           frontier == []:
-            flag = True
+
+        if frontier.isEmpty():
+            self.failureFlag = True
 
         v = View()
         v.updateView(node.data)
-        path.append(node)
+        while node.parent != None:
+            path.append(node)
+            node = node.parent
         return path
 
     def expand(self, node: Node) -> None:
@@ -110,26 +119,33 @@ class gameAgent:
             if(len(tabs[t]) > 0):
 
                 card = tabs[t][0]
+                src = t
+                emptyTabCount = 0 #Count of empty tabs, we ignore placements of cards past the first one
+                                  #This reduces state spaces so we do not cycle when cards get low
 
                 for i in range(len(tabs)):
 
                     if t == i:
                         pass
+
+                    if(len(tabs[i]) == 0):
+                        emptyTabCount += 1
+
                     #moveCardBetweenTabs
-                    if self.isValidMoveForTab(card, tabs[i]):
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[i]) :
                         copyB = deepcopy(board) # making a deep copy of board to make a new state
                         copyTabs = copyB.getTableaus()
 
                         copyC = copyTabs[t].pop(0)
                         copyTabs[i].insert(0, copyC)
-                        node.addNext(Node(copyB, 1, node, 1))
+                        node.addNext(Node(copyB, 1, node, 1, src, i))
         
         #simulate to freeCell and foundation movements
         for t in range(len(tabs)):
 
             if(len(tabs[t]) > 0):
                 card = tabs[t][0]
-
+                src = t
                 for i in range(len(freeCells)):
                     
                     #tab to freeCell
@@ -142,7 +158,7 @@ class gameAgent:
                         copyC = copyTab.pop(0)
                         copyFC[i] = copyC
 
-                        node.addNext(Node(copyB, 1, node, 2))
+                        node.addNext(Node(copyB, 1, node, 2, src, i))
                         break
             
                 #tab to foundation
@@ -155,17 +171,22 @@ class gameAgent:
                     copyC = copyTab.pop(0)
                     copyF[copyC.getSuit()] = copyC
                     
-                    node.addNext(Node(copyB, 1, node, 4))
+                    node.addNext(Node(copyB, 1, node, 4, src, copyC.getSuit()))
 
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
             card = freeCells[i]
+            emptyTabCount = 0 #Same counter from before when simulating tabtotab
 
             if (card != None): #Only do this if cell is NOT empty
                 #Card to tab
                 #moveCardFromFreeCell
                 for t in range(len(tabs)):
-                    if(self.isValidMoveForTab(card, tabs[t])):
+                    
+                    if(len(tabs) == 0):
+                        emptyTabCount += 1
+
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[t]):
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
@@ -174,7 +195,7 @@ class gameAgent:
                         copyTab.insert(0, copyC)
                         copyFC[i] = None
 
-                        node.addNext(Node(copyB, 1, node, 3))
+                        node.addNext(Node(copyB, 1, node, 3, i, t))
 
                 #Card to foundation
                 #moveFreeCelltoFoundation
@@ -187,7 +208,7 @@ class gameAgent:
                     copyF[copyC.getSuit()] = copyC
                     copyFC[i] = None
                     
-                    node.addNext(Node(copyB, 1, node, 5))
+                    node.addNext(Node(copyB, 1, node, 5, i, copyC.getSuit()))
     
 
     def execute(self, path) -> None:
@@ -198,6 +219,24 @@ class gameAgent:
         path -- path to execute
         '''
         path.reverse()
+        if path == None:
+            exit()
+        for node in path:
+            if node.movetype == 1:
+                print("Move card from tab", node.src + 1, "to tab", node.dest + 1)
+                self.controller.moveCardBetweenTabs(node.src, node.dest)
+            elif node.movetype == 2:
+                print("Move card from tab", node.src + 1, "to free cell", node.dest + 1)
+                self.controller.moveCardToFreeCell(node.src, node.dest)
+            elif node.movetype == 3:
+                print("Move card from free cell", node.src + 1, "to tab", node.dest + 1)
+                self.controller.moveCardFromFreeCell(node.src, node.dest)
+            elif node.movetype == 4:
+                print("Move card from tab", node.src + 1, "to foundation", node.dest + 1)
+                self.controller.moveTabtoFoundation(node.src)
+            elif node.movetype == 5:
+                print("Move card from free cell", node.src + 1, "to foundation", node.dest + 1)
+                self.controller.moveFreeCelltoFoundation(node.src)
         pass
 
     def isGoal(self, s :Board) -> None:
@@ -218,15 +257,54 @@ class gameAgent:
         else:
             return False
 
-    def freeCellHeuristicWilliam(self, node):
-        print("FreeCell Heuristic")
+    def freeCellHeuristicWilliam(self, b: Board):
+        h = 0
+        CARD_WEIGHT = 5
+        DEPTH_WEIGHT = 1
+        idx = 0
+        foundations = b.getFoundations()
+        for foundation in foundations:
+            if foundation == None:
+                cardval = 0
+            else:
+                cardval = foundation.getNumber()
+            suit = idx
+            for tableau in b.getTableaus():
+                for card in tableau:
+                    if card.getNumber() == cardval + 1 and card.getSuit() == suit:
+                        #get the number of cards below it
+                        if tableau.index(card) == 0:
+                            numcards = 0
+                        else:
+                            numcards = tableau.index(card) - 1
+                        h += numcards * DEPTH_WEIGHT
+            idx += 1
+        for f in foundations:
+            cardsOfSuitLeft = 0
+
+            if f:
+                cardsOfSuitLeft = f.getNumber()
+
+            h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
+        return h
         
-    def freeCellHeuristicRyan(self, node):
-        print("FreeCell Heuristic")
+    def basicHueristic(self, b: Board):
+        h = 0
+        foundations = b.getFoundations()
+        for f in foundations:
+            cardsOfSuitLeft = 0
+            if f:
+                cardsOfSuitLeft = f.getNumber()
+            h += (13 - cardsOfSuitLeft)
+        return h
 
     def freeCellHeuristicAntonio(self, b: Board):
-        CARD_WEIGHT = 2
-        SORT_WEIGHT = 1
+        '''
+        An attempt to improve the basic hueristic by
+        setting h to the how many moves it would take to sort the board,
+        plus the cards left on the board. This h is not admissable unfortunately, as it
+        double counts each movement. :(
+        '''
         tabs = b.getTableaus()
         foundations = b.getFoundations()
         h = 0
@@ -239,7 +317,7 @@ class gameAgent:
             #find distance of card from sorted card
             #each cell offset is worth 1 point
                 diff = abs(i - tab.index(copytab[i]))
-                h += diff * SORT_WEIGHT
+                h += diff
 
         #Added weight so foundations are prioritized
         for f in foundations:
@@ -248,7 +326,7 @@ class gameAgent:
             if f:
                 cardsOfSuitLeft = f.getNumber()
 
-            h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
+            h += (13 - cardsOfSuitLeft)
 
         #print(h)
         return h
