@@ -256,7 +256,7 @@ class gameAgent:
 
     def freeCellHeuristicWilliam(self, b: Board):
         h = 0
-        CARD_WEIGHT = 3
+        CARD_WEIGHT = 6
         idx = 0
         foundations = b.getFoundations()
         for foundation in foundations:
@@ -271,7 +271,9 @@ class gameAgent:
                         #get the number of cards below it
                         if tableau.index(card) == 0:
                             numcards = 0
-                        numcards = tableau.index(card)-1
+                        else:
+                            numcards = tableau.index(card)-1
+                        h += numcards
             idx += 1
         for f in foundations:
             cardsOfSuitLeft = 0
