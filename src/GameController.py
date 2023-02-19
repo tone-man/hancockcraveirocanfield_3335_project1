@@ -11,13 +11,16 @@ class GameController:
         self.m = m
         self.v = v
 
-    def moveCardBetweenTabs(self, st, dt) -> None:
+    def moveCardBetweenTabs(self, stIdx, dtIdx) -> None:
         """Moves a card from the tableau to another tableau
 
         Keyword arguments:
-        st -- source tableau
-        dt -- destination 
+        stIdx -- source tableau index
+        dtIdx -- destination tableau index
         """
+
+        st = self.m.getTableau(stIdx)
+        dt = self.m.getTableau(dtIdx)
         c = st[0]
 
         if(self.isValidMoveForTab(c, dt)):
@@ -25,15 +28,14 @@ class GameController:
             dt.insert(0, c)
             self.updateView()
 
-
-
-    def moveCardToFreeCell(self, st, dfcIdx) -> None:
+    def moveCardToFreeCell(self, stIdx, dfcIdx) -> None:
         """Moves a card from the tableau to a freecell.
 
         Keyword arguments:
-        st -- source tableau
+        stIdx -- source tableau index
         dfcIdx -- destination freecell index
         """
+        st = self.m.getTableau(stIdx)
         fc = self.m.getFreeCells()
         c = st[0]
 
@@ -42,13 +44,14 @@ class GameController:
             fc[dfcIdx] = c
             self.updateView()
 
-    def moveCardFromFreeCell(self, sfcIdx, dt) -> None:
+    def moveCardFromFreeCell(self, sfcIdx, dtIdx) -> None:
         """Moves a card from a freecell to a tableau
 
         Keyword arguments:
-        sfc -- source free cell index
-        dt -- destination tableau
+        sfcIdx -- source free cell index
+        dtIdx -- destination tableau index
         """
+        dt = self.m.getTableau(dtIdx)
         fc = self.m.getFreeCells()
         c = fc[sfcIdx]
 
@@ -57,12 +60,13 @@ class GameController:
             fc[sfcIdx] = None
             self.updateView()
 
-    def moveTabtoFoundation(self, t) -> None:
+    def moveTabtoFoundation(self, tIdx) -> None:
         """Moves a card from a tableau to a foundation pile
 
         Keyword arguments:
-        t -- source tableau
+        tIdx -- source tableau
         """
+        t = self.m.getTableau(tIdx)
         f = self.m.getFoundations()
         c = t[0]
         s = c.getSuit()
