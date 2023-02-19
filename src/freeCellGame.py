@@ -3,6 +3,7 @@ from View import View
 from gameAgent import gameAgent
 from GameController import GameController
 import random
+from Card import Card
 
 seed = 5555
 random.seed(seed)

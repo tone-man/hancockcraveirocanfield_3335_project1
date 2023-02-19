@@ -73,9 +73,9 @@ class gameAgent:
                 c = child.data
 
                 if self.isGoal(c):
-                    while node.parent != None:
-                        path.append(node)
-                        node = node.parent
+                    while child.parent != None:
+                        path.append(child)
+                        child = child.parent
                     v = View()
                     v.updateView(c)
                     return path
@@ -218,6 +218,8 @@ class gameAgent:
         path -- path to execute
         '''
         path.reverse()
+        if path == None:
+            exit()
         for node in path:
             if node.movetype == 1:
                 print("Move card from tab", node.src + 1, "to tab", node.dest + 1)
