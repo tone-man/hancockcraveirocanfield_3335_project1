@@ -12,7 +12,13 @@ class Node:
         self.data = value
         self.hval = h
         self.next = []  # All edges of this node
-  
+        self.parent = None
+
+    def __init__(self, value, h, p):
+        self.data = value
+        self.hval = h
+        self.next = []  # All edges of this node
+        self.parent = p
+
     def addNext(self, n):
         self.next.append(n)
-    
