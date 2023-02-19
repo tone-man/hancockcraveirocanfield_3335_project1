@@ -78,6 +78,11 @@ class gameAgent:
                     #insert h calc here
                     newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c), node, child.movetype, child.src, child.dest)
                     frontier.pqPush(newNode, newNode.hval)
+        # Flag to see if the queue is empty to be caught later
+        flag = False 
+        if frontier.isEmpty() == True or \
+           frontier == []:
+            flag = True
 
         v = View()
         v.updateView(node.data)
