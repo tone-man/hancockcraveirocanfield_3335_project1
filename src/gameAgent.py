@@ -84,7 +84,7 @@ class gameAgent:
                     reached.append(c)
 
                     #insert h calc here
-                    newNode = Node(c, node.hval + self.freeCellHeuristicWilliam(c), node, child.movetype, child.src, child.dest)
+                    newNode = Node(c, node.hval + self.basicHueristic(c), node, child.movetype, child.src, child.dest)
                     frontier.pqPush(newNode, newNode.hval)
 
         if frontier.isEmpty():
@@ -256,7 +256,8 @@ class gameAgent:
 
     def freeCellHeuristicWilliam(self, b: Board):
         h = 0
-        CARD_WEIGHT = 6
+        CARD_WEIGHT = 5
+        DEPTH_WEIGHT = 1
         idx = 0
         foundations = b.getFoundations()
         for foundation in foundations:
@@ -272,8 +273,8 @@ class gameAgent:
                         if tableau.index(card) == 0:
                             numcards = 0
                         else:
-                            numcards = tableau.index(card)-1
-                        h += numcards
+                            numcards = tableau.index(card) - 1
+                        h += numcards * DEPTH_WEIGHT
             idx += 1
         for f in foundations:
             cardsOfSuitLeft = 0
@@ -284,8 +285,15 @@ class gameAgent:
             h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
         return h
         
-    def freeCellHeuristicRyan(self, node):
-        print("FreeCell Heuristic")
+    def basicHueristic(self, b: Board):
+        h = 0
+        foundations = b.getFoundations()
+        for f in foundations:
+            cardsOfSuitLeft = 0
+            if f:
+                cardsOfSuitLeft = f.getNumber()
+            h += (13 - cardsOfSuitLeft)
+        return h
 
     def freeCellHeuristicAntonio(self, b: Board):
         CARD_WEIGHT = 2
