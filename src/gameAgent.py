@@ -116,12 +116,19 @@ class gameAgent:
 
                 card = tabs[t][0]
                 src = t
+                emptyTabCount = 0 #Count of empty tabs, we ignore placements of cards past the first one
+                                  #This reduces state spaces so we do not cycle when cards get low
+
                 for i in range(len(tabs)):
 
                     if t == i:
                         pass
+
+                    if(len(tabs[i]) == 0):
+                        emptyTabCount += 1
+
                     #moveCardBetweenTabs
-                    if self.isValidMoveForTab(card, tabs[i]):
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[i]) :
                         copyB = deepcopy(board) # making a deep copy of board to make a new state
                         copyTabs = copyB.getTableaus()
 
@@ -165,12 +172,17 @@ class gameAgent:
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
             card = freeCells[i]
+            emptyTabCount = 0 #Same counter from before when simulating tabtotab
 
             if (card != None): #Only do this if cell is NOT empty
                 #Card to tab
                 #moveCardFromFreeCell
                 for t in range(len(tabs)):
-                    if(self.isValidMoveForTab(card, tabs[t])):
+                    
+                    if(len(tabs) == 0):
+                        emptyTabCount += 1
+
+                    if emptyTabCount == 0 and self.isValidMoveForTab(card, tabs[t]):
                         copyB = deepcopy(board)
                         copyTab = copyB.getTableau(t)
                         copyFC = copyB.getFreeCells()
@@ -246,7 +258,7 @@ class gameAgent:
         print("FreeCell Heuristic")
 
     def freeCellHeuristicAntonio(self, b: Board):
-        CARD_WEIGHT = 3
+        CARD_WEIGHT = 2
         SORT_WEIGHT = 1
         tabs = b.getTableaus()
         foundations = b.getFoundations()
