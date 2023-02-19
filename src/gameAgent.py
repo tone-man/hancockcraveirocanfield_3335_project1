@@ -26,7 +26,7 @@ class gameAgent:
         '''
         print("Agent Initiated!")
         i = 0
-        while not self.isGoal(self.b):
+        while (not self.failureFlag) or (not self.isGoal(self.b)):
 
             print("Round :", i)
             print("-------------------------")
@@ -35,8 +35,7 @@ class gameAgent:
             path = self.search(self.b) #returns solution path to input in controller
 
             if self.failureFlag:
-                print("FAILURE: Out of Possible Moves")
-                break
+                print("Search ran out of states")
 
             print("Search Complete")
             print("Beginning Execution")
@@ -45,7 +44,11 @@ class gameAgent:
 
             i += 1
 
-    
+        if self.failureFlag:
+            print("Goal State Unreachable, Agent Shutting Down")
+        else:
+            print("Goal State has been reached, Agent Shutting Down")
+
     def search(self, b : Board) -> list:
         '''
         Searches state space using MBA* (Memory Bounded A*) to find
