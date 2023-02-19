@@ -45,7 +45,7 @@ class gameAgent:
         goal state. If goal state is not found before reaching memory
         cap, it will return path to best possible state.
         '''
-        node = Node(b, 1, None, 0) #root Tuple
+        node = Node(b, 1, None, 0, 0, 0) #root Tuple
         path = [node]
         goalpath = []
 
@@ -76,7 +76,7 @@ class gameAgent:
                     reached.append(c)
 
                     #insert h calc here
-                    newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c), node, child.movetype)
+                    newNode = Node(c, node.hval + self.freeCellHeuristicAntonio(c), node, child.movetype, child.src, child.dest)
                     frontier.pqPush(newNode, newNode.hval)
 
         v = View()
@@ -105,7 +105,7 @@ class gameAgent:
             if(len(tabs[t]) > 0):
 
                 card = tabs[t][0]
-
+                src = t
                 for i in range(len(tabs)):
 
                     if t == i:
@@ -117,14 +117,14 @@ class gameAgent:
 
                         copyC = copyTabs[t].pop(0)
                         copyTabs[i].insert(0, copyC)
-                        node.addNext(Node(copyB, 1, node, 1))
+                        node.addNext(Node(copyB, 1, node, 1, src, i))
         
         #simulate to freeCell and foundation movements
         for t in range(len(tabs)):
 
             if(len(tabs[t]) > 0):
                 card = tabs[t][0]
-
+                src = t
                 for i in range(len(freeCells)):
                     
                     #tab to freeCell
@@ -137,7 +137,7 @@ class gameAgent:
                         copyC = copyTab.pop(0)
                         copyFC[i] = copyC
 
-                        node.addNext(Node(copyB, 1, node, 2))
+                        node.addNext(Node(copyB, 1, node, 2, src, i))
                         break
             
                 #tab to foundation
@@ -150,7 +150,7 @@ class gameAgent:
                     copyC = copyTab.pop(0)
                     copyF[copyC.getSuit()] = copyC
                     
-                    node.addNext(Node(copyB, 1, node, 4))
+                    node.addNext(Node(copyB, 1, node, 4, src, copyC.getSuit()))
 
         #simulate from freeCell movements to tabs and foundations
         for i in range(len(freeCells)):
@@ -169,7 +169,7 @@ class gameAgent:
                         copyTab.insert(0, copyC)
                         copyFC[i] = None
 
-                        node.addNext(Node(copyB, 1, node, 3))
+                        node.addNext(Node(copyB, 1, node, 3, i, t))
 
                 #Card to foundation
                 #moveFreeCelltoFoundation
@@ -182,7 +182,7 @@ class gameAgent:
                     copyF[copyC.getSuit()] = copyC
                     copyFC[i] = None
                     
-                    node.addNext(Node(copyB, 1, node, 5))
+                    node.addNext(Node(copyB, 1, node, 5, i, copyC.getSuit()))
     
 
     def execute(self, path) -> None:
