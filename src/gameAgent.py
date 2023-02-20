@@ -5,6 +5,7 @@ from Card import Card
 from copy import deepcopy
 from View import View
 from Node import Node
+import time
 
 class gameAgent:
     def __init__(self, b: Board, c: GameController):
@@ -91,8 +92,6 @@ class gameAgent:
         if frontier.isEmpty():
             self.failureFlag = True
 
-        v = View()
-        v.updateView(node.data)
         while node.parent != None:
             path.append(node)
             node = node.parent
@@ -210,7 +209,6 @@ class gameAgent:
                     
                     node.addNext(Node(copyB, 1, node, 5, i, copyC.getSuit()))
     
-
     def execute(self, path) -> None:
         '''
         Executes moves given a path.
@@ -237,6 +235,7 @@ class gameAgent:
             elif node.movetype == 5:
                 print("Move card from free cell", node.src + 1, "to foundation", node.dest + 1)
                 self.controller.moveFreeCelltoFoundation(node.src)
+            time.sleep(.25)
         pass
 
     def isGoal(self, s :Board) -> None:
@@ -259,8 +258,7 @@ class gameAgent:
 
     def freeCellHeuristicWilliam(self, b: Board):
         h = 0
-        CARD_WEIGHT = 5
-        DEPTH_WEIGHT = 1
+
         idx = 0
         foundations = b.getFoundations()
         for foundation in foundations:
@@ -277,7 +275,7 @@ class gameAgent:
                             numcards = 0
                         else:
                             numcards = tableau.index(card) - 1
-                        h += numcards * DEPTH_WEIGHT
+                        h += numcards
             idx += 1
         for f in foundations:
             cardsOfSuitLeft = 0
@@ -285,7 +283,7 @@ class gameAgent:
             if f:
                 cardsOfSuitLeft = f.getNumber()
 
-            h += (13 - cardsOfSuitLeft) * CARD_WEIGHT
+            h += (13 - cardsOfSuitLeft)
         return h
         
     def basicHueristic(self, b: Board):
